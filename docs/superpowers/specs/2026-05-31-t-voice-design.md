@@ -1,0 +1,112 @@
+# T-Voice 設計書（Design Spec）
+
+作成日: 2026-05-31
+ステータス: ドラフト（ユーザーレビュー待ち）
+
+## 概要
+
+Aqua Voice 相当の **macOS ネイティブ常駐ディクテーションアプリ**「**T-Voice**」を開発する。
+グローバルホットキーを押している間にマイク音声を録音し、Apple Speech で文字起こし、
+ローカル LLM（Ollama）で整形（句読点付け・フィラー除去・改行・誤認識修正）したうえで、
+クリップボード経由で **任意の最前面アプリ**（メモ / Slack / ブラウザ等）に自動貼付する。
+
+最大の特徴は **完全オンデバイス・API コストゼロ・プライバシー保持**。
+
+## 動作環境
+
+- MacBook Air M4 / macOS Sequoia **15.7.2**（確認済み）
+- Apple Silicon 必須（ローカル LLM 実行のため）
+
+> 注: macOS 26 で利用可能な Apple Foundation Models（オンデバイス LLM）および
+> 新 Speech API（`SpeechAnalyzer`）は 15.7.2 では使用できないため、本設計では採用しない。
+
+## 技術スタック
+
+| 領域 | 採用技術 |
+|---|---|
+| 言語 / UI | Swift + SwiftUI（`MenuBarExtra` でメニューバー常駐） |
+| 録音 | `AVAudioEngine` |
+| 文字起こし | Apple Speech（`SFSpeechRecognizer`、日本語ロケール対応） |
+| AI 整形 | ローカル LLM（Ollama）/ `http://localhost:11434` への HTTP リクエスト。既定モデル `qwen2.5:3b` |
+| テキスト流し込み | クリップボード保存 → Cmd+V 送信（`CGEvent`）→ 元クリップボード復元 |
+| 配布形態 | Dock アイコンなし常駐（`Info.plist` の `LSUIElement = true`） |
+
+## アーキテクチャ
+
+各部品はプロトコルで定義し、単体テスト可能にする（依存はモックで差し替え可能）。
+
+```
+HotKeyMonitor   グローバルホットキー監視（押下 / 離す検知）
+AudioRecorder   マイク録音（AVAudioEngine）
+Transcriber     音声 → 生テキスト（Speech）— protocol: Transcrib+ing
+Formatter       生テキスト → 整形テキスト（Ollama HTTP クライアント）— protocol 化
+TextInjector    クリップボード退避 → Cmd+V → クリップボード復元
+SettingsStore   ホットキー / 言語 / モデル名 / 整形プロンプトの永続化（UserDefaults）
+AppCoordinator  状態機械（idle → recording → transcribing → formatting → injecting → idle）
+MenuBarUI       状態表示・設定・権限 / Ollama 起動チェック案内
+```
+
+### 状態機械（AppCoordinator）
+
+```
+idle ──(ホットキー押下)──> recording
+recording ──(ホットキー離す)──> transcribing
+transcribing ──(成功)──> formatting
+transcribing ──(失敗)──> idle（通知）
+formatting ──(成功 or Ollama 未起動でスキップ)──> injecting
+injecting ──(完了)──> idle
+```
+
+## データフロー（押している間だけ録音）
+
+```
+ホットキー押下 → 録音開始（メニューバー ● 点灯）
+        離す → 録音停止
+            → Speech で文字起こし（生テキスト）
+            → Ollama で整形（句読点・フィラー除去・改行・誤認識修正）
+            → クリップボードへ保存
+            → Cmd+V 自動送信（最前面アプリへ貼付）
+            → 元クリップボード内容を復元
+```
+
+## フェーズ計画（ゴール = 常駐アプリ、まずコア検証から）
+
+- **Phase 0 — 基盤**
+  - Xcode プロジェクト雛形（SwiftUI / `LSUIElement`）
+  - 権限設定（マイク / 音声認識 / アクセシビリティ）の Info.plist + entitlements
+  - Ollama のインストール手順とモデル取得（`ollama pull qwen2.5:3b`）をドキュメント化
+  - Ollama への疎通確認（簡易 HTTP リクエスト）
+
+- **Phase 1 — コア検証（最初の到達点）**
+  - 録音 → Speech 文字起こし → Ollama 整形 を **自アプリ内のテキスト表示** で確認
+  - 形態（常駐/ホットキー/貼付）はまだ持たず、ボタン操作で検証
+
+- **Phase 2 — 常駐 + ホットキー**
+  - グローバルホットキー（押下中録音）
+  - メニューバー常駐化（状態インジケータ）
+
+- **Phase 3 — 流し込み**
+  - クリップボード貼付 + Cmd+V 自動送信（任意アプリへ）
+  - 元クリップボード復元
+
+- **Phase 4 — 仕上げ**
+  - 設定 UI（ホットキー変更 / 言語 / モデル名 / 整形プロンプト / カスタム辞書）
+  - エラー導線・通知の整備
+
+## エラー処理 / フォールバック
+
+- **権限未許可**（マイク / 音声認識 / アクセシビリティ）→ メニューバーから「システム設定」へ誘導。
+- **Ollama 未起動 / 未インストール** → 整形をスキップし、生テキストをそのまま貼付。通知で「Ollama を起動してください」と案内。
+- **文字起こし失敗** → 通知して処理中断（idle に戻る）。
+- **Cmd+V 送信失敗**（アクセシビリティ未許可）→ 通知で許可を案内。クリップボードには整形済みテキストが残るため手動貼付は可能。
+
+## テスト方針
+
+- 単体テスト: `Transcriber` / `Formatter` / `TextInjector` をモック化。
+- 状態機械テスト: `AppCoordinator` の遷移（成功 / 各種失敗）を網羅。
+- 手動 E2E: メモ / Slack / ブラウザへの貼付確認、権限フロー確認、Ollama 停止時のフォールバック確認。
+
+## 未決事項 / 今後の検討
+
+- 既定ホットキーの具体キー（例: 右 Option 長押し）は Phase 2 着手時に確定。
+- 整形プロンプトの初期文面は Phase 1 で実テキストを見ながら調整。
