@@ -74,7 +74,10 @@ injecting ──(完了)──> idle
 - **Phase 0 — 基盤**
   - Xcode プロジェクト雛形（SwiftUI / `LSUIElement`）
   - 権限設定（マイク / 音声認識 / アクセシビリティ）の Info.plist + entitlements
-  - Ollama のインストール手順とモデル取得（`ollama pull qwen2.5:3b`）をドキュメント化
+  - **Ollama 新規セットアップ**（ユーザー環境は未インストール）
+    1. `brew install ollama`（または公式 .app をダウンロード）
+    2. `ollama serve` で起動（`http://localhost:11434`）
+    3. `ollama pull qwen2.5:3b` でモデル取得（M4 / 24GB RAM で快適に動作）
   - Ollama への疎通確認（簡易 HTTP リクエスト）
 
 - **Phase 1 — コア検証（最初の到達点）**
