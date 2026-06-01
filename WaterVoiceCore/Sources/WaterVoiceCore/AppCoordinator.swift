@@ -32,6 +32,14 @@ public final class AppCoordinator: ObservableObject {
         state = .recording
     }
 
+    /// Cancel an in-progress recording without transcribing or injecting.
+    /// Discards the captured audio and returns to idle.
+    public func cancelRecording() async {
+        guard state == .recording else { return }
+        _ = try? await recorder.stopRecording()
+        state = .idle
+    }
+
     /// Hotkey released: stop recording and run the pipeline. Never throws —
     /// failures are captured in `lastError` and the machine returns to idle.
     public func endRecordingAndProcess() async {

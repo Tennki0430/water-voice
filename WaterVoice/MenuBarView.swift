@@ -1,23 +1,51 @@
 import SwiftUI
 import WaterVoiceCore
 
+/// The menu shown when clicking the menu-bar icon. Modeled on Aqua Voice's menu.
 struct MenuBarView: View {
     @ObservedObject var coordinator: AppCoordinator
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Water Voice")
-                .font(.headline)
-            Text(statusText)
-                .font(.callout)
-                .foregroundStyle(.secondary)
-            Divider()
-            Button("Water Voice を終了") {
-                NSApplication.shared.terminate(nil)
+        // Status line
+        Text(statusText)
+
+        Divider()
+
+        // Primary action: start / stop dictation
+        if coordinator.state == .recording {
+            Button("録音を停止") {
+                Task { await coordinator.endRecordingAndProcess() }
             }
+            Button("録音をキャンセル") {
+                Task { await coordinator.cancelRecording() }
+            }
+        } else {
+            Button("録音を開始") {
+                Task { try? await coordinator.beginRecording() }
+            }
+            .disabled(coordinator.state != .idle)
         }
-        .padding(10)
-        .frame(width: 240)
+
+        Divider()
+
+        // Aqua-Voice-style configuration entries
+        Button("設定…") { openWindow(id: "settings") }
+            .keyboardShortcut(",", modifiers: .command)
+        Button("辞書を編集…") { openWindow(id: "settings") }
+        Button("カスタム指示…") { openWindow(id: "settings") }
+        Button("統計情報…") { openWindow(id: "stats") }
+
+        Divider()
+
+        Button("デバッグウィンドウを開く") { openWindow(id: "debug") }
+
+        Divider()
+
+        Button("Water Voice を終了") {
+            NSApplication.shared.terminate(nil)
+        }
+        .keyboardShortcut("q", modifiers: .command)
     }
 
     private var statusText: String {

@@ -21,7 +21,7 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>LSUIElement</key>
-	<false/>
+	<true/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Water Voice はあなたの声を録音して文字起こしするためにマイクを使用します。</string>
 	<key>NSPrincipalClass</key>

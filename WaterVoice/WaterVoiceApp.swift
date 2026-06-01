@@ -6,40 +6,43 @@ struct WaterVoiceApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
-        // DEBUG: visible window + Dock icon to verify the pipeline.
-        // Revert to MenuBarExtra-only once confirmed.
-        Window("Water Voice", id: "debug") {
+        MenuBarExtra {
+            MenuBarView(coordinator: appDelegate.coordinator)
+        } label: {
+            MenuBarLabel(coordinator: appDelegate.coordinator)
+        }
+
+        // Opened on demand from the menu.
+        Window("設定", id: "settings") {
+            SettingsView()
+        }
+        .windowResizability(.contentSize)
+
+        Window("統計情報", id: "stats") {
+            StatsView()
+        }
+        .windowResizability(.contentSize)
+
+        Window("Water Voice — デバッグ", id: "debug") {
             DebugView(
                 coordinator: appDelegate.coordinator,
                 levelMonitor: appDelegate.levelMonitor
             )
         }
-
-        MenuBarExtra {
-            MenuBarView(coordinator: appDelegate.coordinator)
-        } label: {
-            MenuBarLabel(
-                coordinator: appDelegate.coordinator,
-                levelMonitor: appDelegate.levelMonitor
-            )
-        }
+        .windowResizability(.contentSize)
     }
 }
 
-/// Menu-bar label that reflects the current dictation state.
-/// While recording it shows a volume-reactive waveform; otherwise a mic icon.
+/// Menu-bar label: mic when idle, filled mic while recording, spinner-ish while processing.
 private struct MenuBarLabel: View {
     @ObservedObject var coordinator: AppCoordinator
-    @ObservedObject var levelMonitor: AudioLevelMonitor
 
     var body: some View {
         switch coordinator.state {
         case .idle:
             Image(systemName: "mic")
         case .recording:
-            // variableValue drives how many waveform bars light up by mic level.
-            Image(systemName: "waveform", variableValue: Double(levelMonitor.level))
-                .symbolRenderingMode(.hierarchical)
+            Image(systemName: "mic.fill")
         case .transcribing, .formatting, .injecting:
             Image(systemName: "waveform.circle")
         }

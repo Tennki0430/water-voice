@@ -110,4 +110,23 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertTrue(injector.injected.isEmpty)
         XCTAssertEqual(c.state, .idle)
     }
+
+    @MainActor
+    func test_cancel_returnsToIdle_withoutInjecting() async throws {
+        let injector = FakeInjector()
+        let c = makeCoordinator(injector: injector)
+
+        try await c.beginRecording()
+        await c.cancelRecording()
+
+        XCTAssertTrue(injector.injected.isEmpty)
+        XCTAssertEqual(c.state, .idle)
+    }
+
+    @MainActor
+    func test_cancel_whenIdle_isNoOp() async {
+        let c = makeCoordinator()
+        await c.cancelRecording()
+        XCTAssertEqual(c.state, .idle)
+    }
 }

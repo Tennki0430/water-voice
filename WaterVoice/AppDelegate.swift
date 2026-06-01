@@ -1,13 +1,16 @@
 import AppKit
+import Combine
 import WaterVoiceCore
 
-/// Owns the coordinator and global hotkey, wiring press/release to the pipeline.
+/// Owns the coordinator, global hotkey, and the floating recording pill.
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let coordinator: AppCoordinator
     let levelMonitor = AudioLevelMonitor()
     private let hotKey = HotKeyMonitor()
     private let recorder: AVAudioRecorderAdapter
+    private let pill = FloatingPillController()
+    private var cancellables: Set<AnyCancellable> = []
 
     override init() {
         let recorder = AVAudioRecorderAdapter()
@@ -40,6 +43,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
         hotKey.start()
+
+        // Show/hide the floating pill as recording starts/stops.
+        coordinator.$state
+            .removeDuplicates()
+            .sink { [weak self] state in
+                guard let self else { return }
+                if state == .recording {
+                    self.pill.show(
+                        levelMonitor: self.levelMonitor,
+                        onCancel: { [weak self] in
+                            Task { await self?.coordinator.cancelRecording(); self?.levelMonitor.reset() }
+                        },
+                        onStop: { [weak self] in
+                            Task { await self?.coordinator.endRecordingAndProcess(); self?.levelMonitor.reset() }
+                        }
+                    )
+                } else {
+                    self.pill.hide()
+                }
+            }
+            .store(in: &cancellables)
     }
 
     func applicationWillTerminate(_ notification: Notification) {
