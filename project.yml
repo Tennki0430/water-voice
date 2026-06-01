@@ -1,0 +1,48 @@
+name: WaterVoice
+options:
+  bundleIdPrefix: com.watervoice
+  deploymentTarget:
+    macOS: "26.0"
+  createIntermediateGroups: true
+
+packages:
+  WaterVoiceCore:
+    path: WaterVoiceCore
+
+targets:
+  WaterVoice:
+    type: application
+    platform: macOS
+    deploymentTarget: "26.0"
+    sources:
+      - WaterVoice
+    dependencies:
+      - package: WaterVoiceCore
+        product: WaterVoiceCore
+    info:
+      path: WaterVoice/Info.plist
+      properties:
+        CFBundleDevelopmentRegion: ja
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        LSUIElement: true
+        NSMicrophoneUsageDescription: "Water Voice はあなたの声を録音して文字起こしするためにマイクを使用します。"
+        NSSpeechRecognitionUsageDescription: "Water Voice は録音した音声を端末内で文字起こしします。"
+        NSPrincipalClass: NSApplication
+    entitlements:
+      path: WaterVoice/WaterVoice.entitlements
+      properties:
+        com.apple.security.app-sandbox: false
+        com.apple.security.device.audio-input: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.watervoice.app
+        PRODUCT_NAME: WaterVoice
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "-"
+        SWIFT_VERSION: "6.0"
+        ENABLE_HARDENED_RUNTIME: YES
