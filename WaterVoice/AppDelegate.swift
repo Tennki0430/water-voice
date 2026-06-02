@@ -7,6 +7,7 @@ import WaterVoiceCore
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let coordinator: AppCoordinator
     let levelMonitor = AudioLevelMonitor()
+    let hotKeyDebug = HotKeyDebugInfo()
     private let hotKey = HotKeyMonitor()
     private let recorder: AVAudioRecorderAdapter
     private let pill = FloatingPillController()
@@ -31,14 +32,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // The global hotkey needs Accessibility permission; prompt on first launch.
+        hotKey.debugInfo = hotKeyDebug
+        hotKey.requestAccessibilityIfNeeded()
+
         hotKey.onPress = { [weak self] in
             guard let self else { return }
-            Task { try? await self.coordinator.beginRecording() }
+            Log.pipeline.notice("onPress -> beginRecording (state=\(String(describing: self.coordinator.state)))")
+            Task {
+                do { try await self.coordinator.beginRecording() }
+                catch { Log.pipeline.error("beginRecording failed: \(error)") }
+            }
         }
         hotKey.onRelease = { [weak self] in
             guard let self else { return }
+            Log.pipeline.notice("onRelease -> endRecordingAndProcess (state=\(String(describing: self.coordinator.state)))")
             Task {
                 await self.coordinator.endRecordingAndProcess()
+                Log.pipeline.notice("endRecordingAndProcess done (state=\(String(describing: self.coordinator.state)), lastError=\(String(describing: self.coordinator.lastError)))")
                 self.levelMonitor.reset()
             }
         }

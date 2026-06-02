@@ -6,6 +6,7 @@ import WaterVoiceCore
 struct DebugView: View {
     @ObservedObject var coordinator: AppCoordinator
     @ObservedObject var levelMonitor: AudioLevelMonitor
+    @ObservedObject var hotKeyDebug: HotKeyDebugInfo
     @State private var isBusy = false
 
     var body: some View {
@@ -19,6 +20,23 @@ struct DebugView: View {
                     .frame(width: 12, height: 12)
                 Text(statusText)
                     .font(.headline)
+            }
+
+            GroupBox("ホットキー診断") {
+                VStack(alignment: .leading, spacing: 4) {
+                    Label(
+                        hotKeyDebug.isTrusted ? "アクセシビリティ: 許可済み" : "アクセシビリティ: 未許可",
+                        systemImage: hotKeyDebug.isTrusted ? "checkmark.circle.fill" : "xmark.circle.fill"
+                    )
+                    .foregroundStyle(hotKeyDebug.isTrusted ? .green : .red)
+                    Text("グローバル監視: \(hotKeyDebug.monitorInstalled ? "インストール済み" : "未インストール")")
+                    Text("flagsChanged 回数: \(hotKeyDebug.flagsChangedCount)")
+                    Text("最後のイベント: \(hotKeyDebug.lastEvent)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .font(.callout)
             }
 
             WaveformView(

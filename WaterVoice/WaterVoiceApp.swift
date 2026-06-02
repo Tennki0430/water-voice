@@ -26,7 +26,8 @@ struct WaterVoiceApp: App {
         Window("Water Voice — デバッグ", id: "debug") {
             DebugView(
                 coordinator: appDelegate.coordinator,
-                levelMonitor: appDelegate.levelMonitor
+                levelMonitor: appDelegate.levelMonitor,
+                hotKeyDebug: appDelegate.hotKeyDebug
             )
         }
         .windowResizability(.contentSize)
