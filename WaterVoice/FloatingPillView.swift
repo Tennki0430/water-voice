@@ -1,73 +1,113 @@
 import SwiftUI
 
-/// The Aqua-Voice-style floating pill shown during recording:
-/// a cancel button, a live waveform, and a stop button on a dark rounded capsule.
+/// Light, informative floating recording panel:
+/// a center-weighted waveform on top, and a bottom row with a mic label
+/// plus Stop / Cancel hints — matching the reference design.
 struct FloatingPillView: View {
     let level: Float
     var onCancel: () -> Void
     var onStop: () -> Void
 
     var body: some View {
-        HStack(spacing: 14) {
-            Button(action: onCancel) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 22))
-                    .foregroundStyle(.white.opacity(0.55))
-            }
-            .buttonStyle(.plain)
-
+        VStack(spacing: 12) {
             PillWaveform(level: level)
-                .frame(width: 140, height: 26)
+                .frame(height: 44)
+                .padding(.horizontal, 4)
 
-            Button(action: onStop) {
-                Image(systemName: "stop.circle.fill")
-                    .font(.system(size: 22))
-                    .foregroundStyle(.red)
+            HStack(spacing: 8) {
+                // Left: mic + label
+                Image(systemName: "mic")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
+                Text("音声文字起こし")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
+
+                Spacer(minLength: 16)
+
+                // Right: Stop and Cancel with keycap hints
+                Button(action: onStop) {
+                    HStack(spacing: 4) {
+                        Text("Stop").foregroundStyle(.primary)
+                        KeyCap(text: "⌥")
+                        KeyCap(text: "Space")
+                    }
+                }
+                .buttonStyle(.plain)
+
+                Button(action: onCancel) {
+                    HStack(spacing: 4) {
+                        Text("Cancel").foregroundStyle(.secondary)
+                        KeyCap(text: "esc")
+                    }
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
+            .font(.system(size: 12))
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
+        .frame(width: 520)
         .background(
-            Capsule(style: .continuous)
-                .fill(.black.opacity(0.82))
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(.regularMaterial)
         )
         .overlay(
-            Capsule(style: .continuous)
-                .stroke(.white.opacity(0.12), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(.black.opacity(0.06), lineWidth: 1)
         )
-        .shadow(color: .black.opacity(0.35), radius: 12, y: 4)
+        .shadow(color: .black.opacity(0.18), radius: 14, y: 5)
     }
 }
 
-/// A symmetric, center-weighted bar waveform like the reference UI.
+/// A small keyboard-cap style label like "⌥" / "Space" / "esc".
+private struct KeyCap: View {
+    let text: String
+    var body: some View {
+        Text(text)
+            .font(.system(size: 11, weight: .medium))
+            .foregroundStyle(.secondary)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(
+                RoundedRectangle(cornerRadius: 5, style: .continuous)
+                    .fill(.gray.opacity(0.15))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 5, style: .continuous)
+                    .stroke(.gray.opacity(0.25), lineWidth: 0.5)
+            )
+    }
+}
+
+/// A symmetric, center-weighted dotted waveform like the reference UI.
 private struct PillWaveform: View {
     let level: Float
 
-    private static let barCount = 19
-    @State private var phase: Double = 0
+    private static let barCount = 60
 
     var body: some View {
         TimelineView(.animation(minimumInterval: 0.05)) { timeline in
             Canvas { context, size in
                 let now = timeline.date.timeIntervalSinceReferenceDate
                 let barSpacing = size.width / CGFloat(Self.barCount)
-                let barWidth = barSpacing * 0.45
+                let barWidth = barSpacing * 0.35
                 let midY = size.height / 2
-                let lvl = CGFloat(max(0.05, min(1, level)))
+                // Boost responsiveness: small input still shows a lively wave.
+                let boosted = CGFloat(min(1, pow(max(0.04, level), 0.6) * 1.4))
 
                 for i in 0..<Self.barCount {
-                    // Center bars are tallest; edges taper — like the reference image.
-                    let distFromCenter = abs(Double(i) - Double(Self.barCount - 1) / 2)
-                    let centerWeight = 1.0 - (distFromCenter / Double(Self.barCount)) * 1.4
-                    let wobble = 0.5 + 0.5 * sin(now * 6 + Double(i) * 0.7)
-                    let h = max(2, size.height * lvl * CGFloat(max(0, centerWeight)) * CGFloat(0.4 + 0.6 * wobble))
+                    // Center-weighted envelope so the middle is tallest.
+                    let t = Double(i) / Double(Self.barCount - 1)
+                    let envelope = sin(t * .pi) // 0 at edges, 1 in center
+                    let wobble = 0.5 + 0.5 * sin(now * 7 + Double(i) * 0.5)
+                    let h = max(2, size.height * boosted * CGFloat(envelope) * CGFloat(0.55 + 0.45 * wobble))
 
                     let x = barSpacing * CGFloat(i) + barSpacing / 2
                     let rect = CGRect(x: x - barWidth / 2, y: midY - h / 2, width: barWidth, height: h)
                     context.fill(
                         Path(roundedRect: rect, cornerRadius: barWidth / 2),
-                        with: .color(.white.opacity(0.9))
+                        with: .color(.secondary.opacity(0.55))
                     )
                 }
             }
