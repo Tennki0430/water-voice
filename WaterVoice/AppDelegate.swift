@@ -39,6 +39,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         hotKey.onPress = { [weak self] in
             guard let self else { return }
             Log.pipeline.notice("onPress -> beginRecording (state=\(String(describing: self.coordinator.state)))")
+            SoundPlayer.playBegin()
             Task {
                 do { try await self.coordinator.beginRecording() }
                 catch { Log.pipeline.error("beginRecording failed: \(error)") }
@@ -47,6 +48,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         hotKey.onRelease = { [weak self] in
             guard let self else { return }
             Log.pipeline.notice("onRelease -> endRecordingAndProcess (state=\(String(describing: self.coordinator.state)))")
+            SoundPlayer.playEnd()
             Task {
                 await self.coordinator.endRecordingAndProcess()
                 Log.pipeline.notice("endRecordingAndProcess done (state=\(String(describing: self.coordinator.state)), lastError=\(String(describing: self.coordinator.lastError)))")
