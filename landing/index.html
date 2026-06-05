@@ -22,7 +22,7 @@
     --night: oklch(22% 0.045 250);
     --night-2: oklch(16% 0.04 255);
     --grad-drop: linear-gradient(160deg, #6fc3f2, #3b9ad9 55%, #155a8a);
-    --text-hero: clamp(2.7rem, 1rem + 7vw, 6rem);
+    --text-hero: clamp(2.6rem, 1rem + 5.4vw, 5rem);
     --text-h2: clamp(1.9rem, 1.1rem + 2.8vw, 3.2rem);
     --space-sec: clamp(4.5rem, 3rem + 6vw, 9rem);
     --r: 22px;
@@ -31,14 +31,14 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-  body { font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.75; -webkit-font-smoothing: antialiased; }
+  body { font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.75; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   .wrap { width: min(1140px, 92vw); margin-inline: auto; }
   a { color: inherit; text-decoration: none; }
 
   /* nav */
   nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(16px); background: oklch(16% 0.04 255 / 0.6); border-bottom: 1px solid oklch(100% 0 0 / 0.08); }
   nav .wrap { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; }
-  .brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 800; letter-spacing: -0.02em; color: #fff; }
+  .brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 800; letter-spacing: -0.02em; color: #fff; white-space: nowrap; }
   .brand img { width: 32px; height: 32px; border-radius: 8px; }
   nav .spacer { flex: 1; }
   nav a.link { color: oklch(85% 0.02 235); font-size: 0.92rem; transition: color 0.2s; }
@@ -52,7 +52,8 @@
   header.hero { position: relative; background: radial-gradient(1200px 600px at 70% -10%, oklch(40% 0.12 240 / 0.55), transparent 60%), linear-gradient(180deg, var(--night), var(--night-2)); color: #fff; padding: clamp(3.5rem,2rem+5vw,7rem) 0 calc(var(--space-sec) + 3rem); overflow: hidden; }
   .hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(2rem,1rem+4vw,4rem); align-items: center; }
   .eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; background: oklch(100% 0 0 / 0.08); color: var(--cyan); font-size: 0.8rem; font-weight: 700; padding: 0.4rem 0.9rem; border-radius: 999px; border: 1px solid oklch(100% 0 0 / 0.12); margin-bottom: 1.5rem; }
-  h1 { font-size: var(--text-hero); line-height: 0.96; letter-spacing: -0.045em; font-weight: 850; }
+  h1 { font-size: var(--text-hero); line-height: 1.0; letter-spacing: -0.045em; font-weight: 850; word-break: keep-all; line-break: strict; }
+  h1 .line { display: block; }
   h1 .grad { background: linear-gradient(120deg, #8fd3ff, #3b9ad9); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .lead { font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.32rem); color: oklch(86% 0.02 235); margin: 1.6rem 0 2rem; max-width: 34ch; }
   .cta-row { display: flex; gap: 0.9rem; flex-wrap: wrap; align-items: center; }
@@ -143,6 +144,14 @@
     .card.span3, .card.span2 { grid-column: span 1; }
     .prices { grid-template-columns: 1fr; }
   }
+  @media (max-width: 560px) {
+    nav a.link { display: none; }
+    nav .wrap { width: 100%; padding-inline: 16px; }
+    nav .btn { padding: 0.55rem 1rem; font-size: 0.88rem; }
+    .floating-pill { right: 0; font-size: 0.76rem; padding: 0.5rem 0.85rem; }
+    .lead { max-width: 100%; }
+    h1 { font-size: clamp(2.4rem, 9vw, 3.2rem); }
+  }
   @media (prefers-reduced-motion: reduce) { *, ::before, ::after { animation: none !important; transition: none !important; scroll-behavior: auto; } }
 </style>
 </head>
@@ -163,8 +172,8 @@
   <div class="wrap hero-grid">
     <div>
       <span class="eyebrow">🍃 完全オンデバイス・APIコストゼロ</span>
-      <h1>タイプしない。<br><span class="grad">話すだけ。</span></h1>
-      <p class="lead">声を、どのアプリでも使える<strong>整った文章</strong>に。Water Voice は音声を一切外部に送らない、完全オンデバイスの Mac 音声入力です。</p>
+      <h1><span class="line">タイプしない。</span><span class="line grad">話すだけ。</span></h1>
+      <p class="lead">考える速さで、文章になる。話すだけで、メールも議事録もチャットも、<strong>そのまま“出せる文章”に</strong>。あなたの声は、一切外に出ません。</p>
       <div class="cta-row">
         <a class="btn" href="#pricing">無料でダウンロード</a>
         <a class="btn ghost" href="#how">デモを見る →</a>
@@ -182,9 +191,9 @@
 
 <div class="wrap">
   <div class="speed">
-    <div><b>約3〜4倍</b><span>タイピングより速く入力</span></div>
-    <div><b>0送信</b><span>音声は外部に出ない（完全オフライン）</span></div>
-    <div><b>¥0〜</b><span>月額なし・買い切りプランあり</span></div>
+    <div><b>3〜4倍速</b><span>指で打つより、ずっと速い</span></div>
+    <div><b>外に出ない</b><span>声も文字も、Macの中だけ</span></div>
+    <div><b>月額0円</b><span>使い放題でも、追加料金なし</span></div>
   </div>
 </div>
 
@@ -192,7 +201,7 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="kicker">See it</span>
-      <h2>話した言葉が、そのまま整う。</h2>
+      <h2>とりとめのない話し言葉が、<br>“そのまま提出できる文章”へ。</h2>
     </div>
     <div class="demo">
       <img src="assets/ai-command.svg" alt="AIコマンドのbefore/after: 話した言葉が翻訳・箇条書き・敬語に整形される">
@@ -205,7 +214,7 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="kicker">Features</span>
-      <h2>“整える”まで、全部やる。</h2>
+      <h2>文字起こしで、終わらない。</h2>
     </div>
     <div class="bento">
       <div class="card span3">
@@ -254,7 +263,7 @@
 
 <section id="pricing">
   <div class="wrap">
-    <div class="sec-head"><span class="kicker">Pricing</span><h2>サブスク疲れに、買い切りを。</h2></div>
+    <div class="sec-head"><span class="kicker">Pricing</span><h2>一度きりの支払いで、ずっとあなたのものに。</h2><p style="color:var(--ink-soft); margin-top:0.8rem; max-width:42ch;">月額を払い続ける音声入力に、もう疲れていませんか。Water Voice はコーヒー数杯分の買い切りで、毎日の「書く」がずっと軽くなります。</p></div>
     <div class="prices">
       <div class="price">
         <h3>Free</h3>
@@ -276,8 +285,8 @@
           <li>カスタム辞書・アプリ別プロファイル</li>
           <li>トーン切替・今後のアップデート</li>
         </ul>
-        <a class="btn" href="#">14日間無料で試す</a>
-        <p class="sub">カード不要 ・ いつでも解約OK</p>
+        <a class="btn" href="#">14日間、無料で試す</a>
+        <p class="sub">カード不要 ・ 気に入らなければ、そのまま離れるだけ</p>
       </div>
     </div>
     <p class="note" style="text-align:center; color:var(--ink-soft); margin-top:1.4rem;">※ 価格は予定です。決済・ライセンスは外部事業者を利用予定。</p>
@@ -297,9 +306,9 @@
 
 <section>
   <div class="wrap final">
-    <h2>今日から、タイピングをやめてみる。</h2>
-    <a class="btn" href="#pricing" style="font-size:1.05rem; padding:0.9rem 1.8rem;">無料でダウンロード</a>
-    <p class="note" style="color:var(--ink-soft); margin-top:1rem;">macOS 14 以降 ・ Pro は14日間無料・カード不要</p>
+    <h2>指を止めて、話してみる。<br>仕事が、ふっと軽くなる。</h2>
+    <a class="btn" href="#pricing" style="font-size:1.05rem; padding:0.9rem 1.8rem;">無料ではじめる</a>
+    <p class="note" style="color:var(--ink-soft); margin-top:1rem;">macOS 14 以降 ・ Pro は14日間無料・カード不要・いつでも解約OK</p>
   </div>
 </section>
 
