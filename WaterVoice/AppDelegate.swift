@@ -12,7 +12,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private let hotKey    = HotKeyMonitor()
     private let recorder: AVAudioRecorderAdapter
-    private let transcriber: SpeechAnalyzerTranscriber
+    private let transcriber: any ConfigurableTranscriber
     private let pill  = FloatingPillController()
     private let toast = ToastController()
     private var cancellables: Set<AnyCancellable> = []
@@ -21,7 +21,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let recorder   = AVAudioRecorderAdapter()
         // ④ 設定から言語を読み込む
         let settings   = SettingsStore(store: UserDefaultsKeyValueStore())
-        let transcriber = SpeechAnalyzerTranscriber(localeIdentifier: settings.languageCode)
+        // OS バージョンに応じて文字起こし・整形エンジンを選択（旧 OS 対応）
+        let transcriber = EngineFactory.makeTranscriber(locale: settings.languageCode)
 
         self.recorder   = recorder
         self.transcriber = transcriber
@@ -32,7 +33,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         coordinator = AppCoordinator(
             recorder: recorder,
             transcriber: transcriber,
-            formatter: FoundationModelsFormatter(),
+            formatter: EngineFactory.makeFormatter(),
             injector: ClipboardLogic(clipboard: PasteboardClipboard()),
             contextProvider: contextProvider
         )

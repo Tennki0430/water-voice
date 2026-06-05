@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "WaterVoiceCore",
-    platforms: [.macOS(.v15)],
+    platforms: [.macOS(.v14)],
     products: [
         .library(name: "WaterVoiceCore", targets: ["WaterVoiceCore"]),
     ],

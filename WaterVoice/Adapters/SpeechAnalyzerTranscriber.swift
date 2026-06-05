@@ -7,7 +7,8 @@ import WaterVoiceCore
 ///
 /// 固有名詞・専門用語の正規化（カスタム辞書）は、文字起こし後の整形段階
 /// （FoundationModelsFormatter + CustomDictionary）で行います。
-final class SpeechAnalyzerTranscriber: Transcribing, @unchecked Sendable {
+@available(macOS 26, *)
+final class SpeechAnalyzerTranscriber: ConfigurableTranscriber, @unchecked Sendable {
     var localeIdentifier: String
 
     init(localeIdentifier: String = "ja-JP") {

@@ -1,7 +1,8 @@
 import FoundationModels
 import WaterVoiceCore
 
-/// Cleans up raw transcripts using the on-device Apple Foundation Model.
+/// Cleans up raw transcripts using the on-device Apple Foundation Model (macOS 26+).
+@available(macOS 26, *)
 final class FoundationModelsFormatter: Formatting, @unchecked Sendable {
     private let promptBuilder: FormatterPrompt
 

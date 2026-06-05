@@ -2,7 +2,7 @@ name: WaterVoice
 options:
   bundleIdPrefix: com.watervoice
   deploymentTarget:
-    macOS: "26.0"
+    macOS: "14.0"
   createIntermediateGroups: true
 
 packages:
@@ -13,7 +13,7 @@ targets:
   WaterVoice:
     type: application
     platform: macOS
-    deploymentTarget: "26.0"
+    deploymentTarget: "14.0"
     sources:
       - WaterVoice
     dependencies:

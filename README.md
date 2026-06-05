@@ -107,12 +107,20 @@ Aqua Voice / Wispr Flow / Superwhisper といった有料アプリ相当の体�
 ## 🖥 動作環境
 
 > ⚠️ **macOS 専用です。Windows / Linux では動作しません。**
-> 文字起こし・AI 整形・UI のすべてが Apple 専用フレームワーク
-> （SpeechAnalyzer / Foundation Models / SwiftUI）に依存しているためです。
 
-- macOS **26（Tahoe）以降**（必須）
-- **Apple Silicon**（M1 以降）— Apple Foundation Models の実行に必須
+- macOS **14（Sonoma）以降**で動作します。
+- **Apple Silicon 推奨**（Mac）。
 - マイク
+
+### OS によるエンジンの違い（自動切替）
+
+| 機能 | macOS 26 以降 | macOS 14〜15 |
+|---|---|---|
+| 文字起こし | SpeechAnalyzer（最新・高精度） | SFSpeechRecognizer（Apple 純正・追加不要） |
+| AI 整形 | Foundation Models（フル AI・オンデバイス） | ルールベース軽整形（標準）／ Ollama 導入で本格 AI 整形 |
+
+- 旧 OS でも **追加インストールなしで** 文字起こし＋軽整形（句読点・フィラー除去・辞書反映）が動きます。
+- 旧 OS で **フルの AI 整形・AI コマンド** を使いたい場合は、[Ollama](https://ollama.com) を導入し `ollama pull qwen2.5:3b` してください（自動で検出・利用）。
 
 > 検証環境: MacBook Air M4 / 24GB RAM / macOS 26.5
 
