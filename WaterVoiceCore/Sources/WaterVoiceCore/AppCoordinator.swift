@@ -11,17 +11,23 @@ public final class AppCoordinator: ObservableObject {
     private let transcriber: Transcribing
     private let formatter: Formatting
     private let injector: TextInjecting
+    private let contextProvider: FormatterContextProviding?
+    private let commandParser: VoiceCommandParser
 
     public init(
         recorder: AudioRecording,
         transcriber: Transcribing,
         formatter: Formatting,
-        injector: TextInjecting
+        injector: TextInjecting,
+        contextProvider: FormatterContextProviding? = nil,
+        commandParser: VoiceCommandParser = VoiceCommandParser()
     ) {
         self.recorder = recorder
         self.transcriber = transcriber
         self.formatter = formatter
         self.injector = injector
+        self.contextProvider = contextProvider
+        self.commandParser = commandParser
     }
 
     /// Hotkey pressed: begin recording. Throws if recording can't start.
@@ -56,7 +62,12 @@ public final class AppCoordinator: ObservableObject {
             }
 
             state = .formatting
-            let finalText = await formatOrFallback(rawText: trimmed)
+            // Extract any spoken AI command (e.g. "…英語にして") and strip it
+            // from the body before formatting.
+            let parsed = commandParser.parse(trimmed)
+            var context = await contextProvider?.currentContext() ?? .plain
+            context.command = parsed.command
+            let finalText = await formatOrFallback(rawText: parsed.body, context: context)
 
             state = .injecting
             try await injector.inject(text: finalText)
@@ -69,9 +80,9 @@ public final class AppCoordinator: ObservableObject {
     }
 
     /// Formats the text, falling back to the raw text when the model is unavailable.
-    private func formatOrFallback(rawText: String) async -> String {
+    private func formatOrFallback(rawText: String, context: FormatterContext) async -> String {
         do {
-            return try await formatter.format(rawText: rawText)
+            return try await formatter.format(rawText: rawText, context: context)
         } catch {
             // Any formatter error (unavailable or otherwise) falls back to raw text;
             // we still surface it for the menu-bar UI to optionally show.

@@ -2,9 +2,13 @@ import AVFoundation
 import Speech
 import WaterVoiceCore
 
-/// Transcribes an audio file using the on-device SpeechAnalyzer/SpeechTranscriber (macOS 26+).
+/// 音声ファイルをオンデバイスの SpeechAnalyzer/SpeechTranscriber で文字起こしします（macOS 26+）。
+/// ④ 言語は SettingsStore の languageCode を起動時に読み取ります。
+///
+/// 固有名詞・専門用語の正規化（カスタム辞書）は、文字起こし後の整形段階
+/// （FoundationModelsFormatter + CustomDictionary）で行います。
 final class SpeechAnalyzerTranscriber: Transcribing, @unchecked Sendable {
-    let localeIdentifier: String
+    var localeIdentifier: String
 
     init(localeIdentifier: String = "ja-JP") {
         self.localeIdentifier = localeIdentifier
@@ -12,6 +16,7 @@ final class SpeechAnalyzerTranscriber: Transcribing, @unchecked Sendable {
 
     func transcribe(audioFileURL: URL) async throws -> String {
         let locale = Locale(identifier: localeIdentifier)
+
         let transcriber = SpeechTranscriber(
             locale: locale,
             transcriptionOptions: [],
@@ -19,12 +24,13 @@ final class SpeechAnalyzerTranscriber: Transcribing, @unchecked Sendable {
             attributeOptions: []
         )
 
-        // Ensure the locale assets are installed (download on first use).
+        let analyzer = SpeechAnalyzer(modules: [transcriber])
+
+        // ロケールアセットのインストール（初回のみダウンロード）
         if let request = try await AssetInventory.assetInstallationRequest(supporting: [transcriber]) {
             try await request.downloadAndInstall()
         }
 
-        let analyzer = SpeechAnalyzer(modules: [transcriber])
         let audioFile = try AVAudioFile(forReading: audioFileURL)
 
         if let lastSample = try await analyzer.analyzeSequence(from: audioFile) {

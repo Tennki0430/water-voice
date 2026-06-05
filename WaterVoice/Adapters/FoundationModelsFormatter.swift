@@ -10,6 +10,10 @@ final class FoundationModelsFormatter: Formatting, @unchecked Sendable {
     }
 
     func format(rawText: String) async throws -> String {
+        try await format(rawText: rawText, context: .plain)
+    }
+
+    func format(rawText: String, context: FormatterContext) async throws -> String {
         // 1. Availability gate — throw FormatterUnavailable so coordinator falls back to raw text.
         let model = SystemLanguageModel.default
         switch model.availability {
@@ -26,8 +30,8 @@ final class FoundationModelsFormatter: Formatting, @unchecked Sendable {
             throw FormatterUnavailable(reason: "input exceeds token budget")
         }
 
-        // 3. Run the model.
-        let session = LanguageModelSession(instructions: promptBuilder.instructions)
+        // 3. Run the model with context-aware instructions (tone, dictionary, command).
+        let session = LanguageModelSession(instructions: promptBuilder.instructions(context: context))
         let response = try await session.respond(to: promptBuilder.prompt(rawText: rawText))
         return response.content.trimmingCharacters(in: .whitespacesAndNewlines)
     }

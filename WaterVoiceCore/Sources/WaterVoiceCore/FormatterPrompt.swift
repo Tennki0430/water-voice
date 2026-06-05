@@ -25,6 +25,24 @@ public struct FormatterPrompt: Sendable {
         """
     }
 
+    /// Context-aware instructions: base rules plus tone, custom dictionary,
+    /// and any spoken AI command. Used by the on-device formatter.
+    public func instructions(context: FormatterContext) -> String {
+        var lines = [instructions]
+        if let tone = context.tone.instructionLine {
+            lines.append("追加ルール: \(tone)")
+        }
+        if let dict = context.dictionary.instructionLine {
+            lines.append("追加ルール: \(dict)")
+        }
+        if let command = context.command?.instructionLine {
+            // A command can override the base "do not translate/summarize" rule,
+            // so state it explicitly and last for priority.
+            lines.append("最優先の指示: \(command)")
+        }
+        return lines.joined(separator: "\n\n")
+    }
+
     /// The per-request prompt wrapping the raw transcript.
     public func prompt(rawText: String) -> String {
         """

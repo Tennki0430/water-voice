@@ -17,6 +17,23 @@ public protocol Formatting: Sendable {
     /// Returns formatted text. Implementations should throw `FormatterUnavailable`
     /// when the underlying model cannot be used so the coordinator can fall back.
     func format(rawText: String) async throws -> String
+
+    /// Context-aware formatting (tone, custom dictionary, spoken AI command).
+    /// Default implementation ignores the context and calls `format(rawText:)`.
+    func format(rawText: String, context: FormatterContext) async throws -> String
+}
+
+public extension Formatting {
+    func format(rawText: String, context: FormatterContext) async throws -> String {
+        try await format(rawText: rawText)
+    }
+}
+
+/// Supplies the live formatting context (chosen tone, per-app profile, dictionary)
+/// at the moment a transcript is ready. Implemented in the app target where the
+/// frontmost app and user settings are known.
+public protocol FormatterContextProviding: Sendable {
+    func currentContext() async -> FormatterContext
 }
 
 /// Pastes text into the frontmost application.
