@@ -30,6 +30,7 @@ targets:
         NSMicrophoneUsageDescription: "Water Voice はあなたの声を録音して文字起こしするためにマイクを使用します。"
         NSSpeechRecognitionUsageDescription: "Water Voice は録音した音声を端末内で文字起こしします。"
         NSPrincipalClass: NSApplication
+        CFBundleIconName: AppIcon
     entitlements:
       path: WaterVoice/WaterVoice.entitlements
       properties:
@@ -42,6 +43,7 @@ targets:
         MARKETING_VERSION: "0.1.0"
         CURRENT_PROJECT_VERSION: "1"
         GENERATE_INFOPLIST_FILE: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         CODE_SIGN_STYLE: Manual
         CODE_SIGN_IDENTITY: "WaterVoice Dev"
         SWIFT_VERSION: "6.0"
