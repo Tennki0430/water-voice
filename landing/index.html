@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Water Voice — 完全オンデバイスの音声入力アプリ for Mac</title>
+<meta name="description" content="話すだけで、どのアプリにも。Water Voice は音声を一切外部に送らない、完全オンデバイスのmacOS音声入力アプリ。AIが句読点・整形まで自動で。">
+<meta property="og:title" content="Water Voice — 完全オンデバイスの音声入力 for Mac">
+<meta property="og:description" content="話すだけで、どのアプリにも。音声を外部に送らない、プライバシー第一の音声入力。">
+<meta property="og:image" content="assets/icon-1024.png">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --c-bg: oklch(98% 0.012 230);
+    --c-ink: oklch(28% 0.04 245);
+    --c-ink-soft: oklch(48% 0.03 240);
+    --c-accent: oklch(62% 0.15 240);
+    --c-accent-deep: oklch(42% 0.12 245);
+    --c-surface: oklch(100% 0 0);
+    --c-line: oklch(90% 0.02 240);
+    --grad-hero: linear-gradient(165deg, oklch(96% 0.03 230), oklch(90% 0.06 235));
+    --grad-drop: linear-gradient(160deg, #6fc3f2, #3b9ad9 55%, #155a8a);
+    --text-hero: clamp(2.6rem, 1.2rem + 5.6vw, 5.4rem);
+    --text-h2: clamp(1.8rem, 1.1rem + 2.6vw, 3rem);
+    --space-sec: clamp(4rem, 3rem + 5vw, 8rem);
+    --r: 22px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --shadow: 0 24px 60px -20px oklch(45% 0.1 245 / 0.35);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+    color: var(--c-ink); background: var(--c-bg); line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { width: min(1120px, 92vw); margin-inline: auto; }
+  a { color: inherit; text-decoration: none; }
+
+  /* nav */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(14px);
+    background: oklch(98% 0.012 230 / 0.78);
+    border-bottom: 1px solid var(--c-line);
+  }
+  nav .wrap { display: flex; align-items: center; gap: 1rem; padding: 0.85rem 0; }
+  .brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 800; letter-spacing: -0.02em; }
+  .brand img { width: 34px; height: 34px; border-radius: 9px; }
+  nav .spacer { flex: 1; }
+  nav a.link { color: var(--c-ink-soft); font-size: 0.95rem; transition: color 0.2s; }
+  nav a.link:hover { color: var(--c-accent); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--grad-drop); color: #fff; font-weight: 700;
+    padding: 0.7rem 1.3rem; border-radius: 999px; border: none; cursor: pointer;
+    box-shadow: 0 10px 24px -10px oklch(50% 0.15 245 / 0.6);
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -10px oklch(50% 0.15 245 / 0.7); }
+  .btn.ghost { background: var(--c-surface); color: var(--c-accent-deep); box-shadow: inset 0 0 0 1.5px var(--c-line); }
+
+  /* hero */
+  header.hero { background: var(--grad-hero); padding: clamp(3rem,2rem+5vw,6rem) 0 var(--space-sec); overflow: hidden; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(2rem,1rem+4vw,4rem); align-items: center; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: oklch(100% 0 0 / 0.7); color: var(--c-accent-deep);
+    font-size: 0.82rem; font-weight: 700; padding: 0.35rem 0.85rem; border-radius: 999px;
+    border: 1px solid var(--c-line); margin-bottom: 1.4rem;
+  }
+  h1 { font-size: var(--text-hero); line-height: 0.98; letter-spacing: -0.04em; font-weight: 850; }
+  h1 .grad { background: var(--grad-drop); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem); color: var(--c-ink-soft); margin: 1.5rem 0 2rem; max-width: 32ch; }
+  .cta-row { display: flex; gap: 0.9rem; flex-wrap: wrap; align-items: center; }
+  .note { font-size: 0.85rem; color: var(--c-ink-soft); margin-top: 1rem; }
+  .hero-visual { position: relative; display: grid; place-items: center; }
+  .hero-visual .drop {
+    width: clamp(220px, 26vw, 340px); aspect-ratio: 1; border-radius: 28%;
+    background: var(--grad-drop); box-shadow: var(--shadow);
+    display: grid; place-items: center; transform: rotate(-4deg);
+  }
+  .hero-visual .drop img { width: 64%; filter: drop-shadow(0 8px 16px rgba(0,0,0,.25)); }
+  .floating-pill {
+    position: absolute; bottom: -14px; right: -6px;
+    background: oklch(28% 0.04 245); color: #fff; border-radius: 999px;
+    padding: 0.7rem 1.1rem; display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.85rem; box-shadow: var(--shadow);
+  }
+  .rec-dot { width: 12px; height: 12px; border-radius: 50%; background: #ff5a5a; }
+
+  /* trust strip */
+  .trust { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--c-line); border-radius: var(--r); overflow: hidden; margin-top: calc(-1 * var(--space-sec) / 2); box-shadow: var(--shadow); }
+  .trust div { background: var(--c-surface); padding: 1.4rem 1.2rem; text-align: center; }
+  .trust b { display: block; font-size: 1.5rem; color: var(--c-accent-deep); letter-spacing: -0.02em; }
+  .trust span { font-size: 0.85rem; color: var(--c-ink-soft); }
+
+  /* sections */
+  section { padding: var(--space-sec) 0; }
+  .sec-head { max-width: 36ch; margin-bottom: 3rem; }
+  .sec-head .kicker { color: var(--c-accent); font-weight: 800; letter-spacing: 0.04em; font-size: 0.85rem; text-transform: uppercase; }
+  h2 { font-size: var(--text-h2); letter-spacing: -0.03em; line-height: 1.08; margin-top: 0.4rem; }
+
+  /* bento features */
+  .bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1.1rem; }
+  .card {
+    background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r);
+    padding: 1.6rem; transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .card .ic { font-size: 1.8rem; }
+  .card h3 { margin: 0.7rem 0 0.4rem; font-size: 1.2rem; letter-spacing: -0.01em; }
+  .card p { color: var(--c-ink-soft); font-size: 0.96rem; }
+  .card.span3 { grid-column: span 3; }
+  .card.span2 { grid-column: span 2; }
+  .card.feature-img { padding: 0; overflow: hidden; }
+  .card.feature-img img { width: 100%; display: block; }
+
+  /* how */
+  .how img { width: 100%; border-radius: var(--r); border: 1px solid var(--c-line); box-shadow: var(--shadow); }
+
+  /* privacy */
+  .privacy { background: oklch(26% 0.05 248); color: oklch(96% 0.01 230); border-radius: calc(var(--r) + 8px); padding: clamp(2.4rem,1.5rem+4vw,4rem); position: relative; overflow: hidden; }
+  .privacy::after { content: ""; position: absolute; inset: auto -10% -40% auto; width: 360px; height: 360px; background: radial-gradient(circle, oklch(62% 0.15 240 / 0.5), transparent 70%); }
+  .privacy h2 { color: #fff; }
+  .privacy ul { list-style: none; margin-top: 1.6rem; display: grid; gap: 0.9rem; max-width: 60ch; }
+  .privacy li { display: flex; gap: 0.7rem; align-items: flex-start; color: oklch(88% 0.02 230); }
+  .privacy li b { color: #fff; }
+
+  /* pricing */
+  .prices { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; align-items: stretch; }
+  .price { background: var(--c-surface); border: 1px solid var(--c-line); border-radius: var(--r); padding: 2rem; display: flex; flex-direction: column; }
+  .price.featured { border: 2px solid var(--c-accent); box-shadow: var(--shadow); position: relative; }
+  .price .tag { position: absolute; top: -12px; left: 2rem; background: var(--grad-drop); color: #fff; font-size: 0.78rem; font-weight: 700; padding: 0.25rem 0.8rem; border-radius: 999px; }
+  .price h3 { font-size: 1.3rem; }
+  .amount { font-size: 2.6rem; font-weight: 850; letter-spacing: -0.03em; margin: 0.4rem 0; }
+  .amount small { font-size: 1rem; font-weight: 500; color: var(--c-ink-soft); }
+  .price ul { list-style: none; margin: 1.2rem 0; display: grid; gap: 0.6rem; flex: 1; }
+  .price li { padding-left: 1.6rem; position: relative; color: var(--c-ink-soft); }
+  .price li::before { content: "✓"; position: absolute; left: 0; color: var(--c-accent); font-weight: 800; }
+
+  /* faq */
+  details { background: var(--c-surface); border: 1px solid var(--c-line); border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 0.8rem; }
+  details summary { cursor: pointer; font-weight: 700; list-style: none; }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] summary { color: var(--c-accent-deep); }
+  details p { color: var(--c-ink-soft); margin-top: 0.7rem; }
+
+  /* footer */
+  footer { border-top: 1px solid var(--c-line); padding: 3rem 0; color: var(--c-ink-soft); font-size: 0.9rem; }
+  footer .wrap { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; }
+  footer .spacer { flex: 1; }
+
+  @media (max-width: 820px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-visual { order: -1; }
+    .trust { grid-template-columns: 1fr; }
+    .bento { grid-template-columns: 1fr; }
+    .card.span3, .card.span2 { grid-column: span 1; }
+    .prices { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="assets/icon-1024.png" alt="Water Voice"> Water Voice</a>
+    <div class="spacer"></div>
+    <a class="link" href="#features">機能</a>
+    <a class="link" href="#privacy">プライバシー</a>
+    <a class="link" href="#pricing">価格</a>
+    <a class="btn" href="#pricing">無料ではじめる</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">🍃 完全オンデバイス・APIコストゼロ</span>
+      <h1>話すだけで、<br><span class="grad">どのアプリにも。</span></h1>
+      <p class="lead">Water Voice は、音声を<strong>一切外部に送らない</strong>Mac用の音声入力アプリ。AIが句読点・整形まで自動で行い、メモ・Slack・ブラウザ、どこへでも貼り付けます。</p>
+      <div class="cta-row">
+        <a class="btn" href="#pricing">無料でダウンロード</a>
+        <a class="btn ghost" href="#how">使い方を見る →</a>
+      </div>
+      <p class="note">macOS 14 以降 / Apple Silicon 推奨。サブスク不要の買い切りプランあり。</p>
+    </div>
+    <div class="hero-visual">
+      <div class="drop"><img src="assets/appicon.svg" alt="水滴アイコン"></div>
+      <div class="floating-pill"><span class="rec-dot"></span> 録音中… 話してください</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="trust">
+    <div><b>0円</b><span>クラウドAI利用料・月額なし</span></div>
+    <div><b>0送信</b><span>音声は外部に出ない（完全オフライン）</span></div>
+    <div><b>日本語◎</b><span>日本語の整形・辞書に最適化</span></div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Features</span>
+      <h2>有料アプリ級の機能を、無料の土台に。</h2>
+    </div>
+    <div class="bento">
+      <div class="card span3 feature-img"><img src="assets/ai-command.svg" alt="AIコマンドのbefore/after"></div>
+      <div class="card span3">
+        <div class="ic">🗣️</div>
+        <h3>AIコマンド</h3>
+        <p>話し終わりに「英語にして」「箇条書きにして」「要約して」「敬語にして」と添えるだけ。その指示どおりに整形・翻訳します。</p>
+      </div>
+      <div class="card span2">
+        <div class="ic">📖</div>
+        <h3>カスタム辞書</h3>
+        <p>人名・社名・専門用語を「読み→表記」で登録し、誤変換を防止。</p>
+      </div>
+      <div class="card span2">
+        <div class="ic">📱</div>
+        <h3>アプリ別プロファイル</h3>
+        <p>メールは敬語、Slackはチャット調。最前面のアプリで文体を自動切替。</p>
+      </div>
+      <div class="card span2">
+        <div class="ic">🎚️</div>
+        <h3>トーン切替</h3>
+        <p>フォーマル / カジュアル / メール / チャットから文体を選択。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">How it works</span>
+      <h2>押して話す。離せば、貼り付く。</h2>
+    </div>
+    <img src="assets/flow.svg" alt="使い方フロー: 押して話す→文字起こし→AI整形→クリップボード→どのアプリにも">
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="privacy">
+      <span class="kicker" style="color: oklch(80% 0.1 235)">Privacy first</span>
+      <h2>あなたの声は、あなたのMacから出ません。</h2>
+      <ul>
+        <li>🛡 <span><b>完全オフライン動作。</b> 音声も文字も外部サーバーへ送信しません。</span></li>
+        <li>🔒 <span><b>外部ライブラリ依存ゼロ。</b> Apple純正フレームワークのみで動作。</span></li>
+        <li>💸 <span><b>クラウドAI利用料なし。</b> オンデバイス処理だから、使い放題でも追加コストゼロ。</span></li>
+        <li>🧾 <span><b>収集も解析もしない。</b> 広告SDK・トラッキングは一切なし。</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Pricing</span>
+      <h2>サブスク疲れに、買い切りを。</h2>
+    </div>
+    <div class="prices">
+      <div class="price">
+        <h3>Free</h3>
+        <div class="amount">¥0</div>
+        <ul>
+          <li>音声入力（文字起こし＋軽整形）</li>
+          <li>どのアプリにも貼り付け</li>
+          <li>メニューバー常駐・ホットキー</li>
+        </ul>
+        <a class="btn ghost" href="#">ダウンロード</a>
+      </div>
+      <div class="price featured">
+        <span class="tag">いちばん人気</span>
+        <h3>Pro（買い切り）</h3>
+        <div class="amount">¥3,800 <small>/ 永続ライセンス</small></div>
+        <ul>
+          <li>Freeのすべて</li>
+          <li>AIコマンド（翻訳・要約・箇条書き・敬語）</li>
+          <li>カスタム辞書・アプリ別プロファイル</li>
+          <li>トーン切替・今後のアップデート</li>
+        </ul>
+        <a class="btn" href="#">7日間無料で試す</a>
+      </div>
+    </div>
+    <p class="note" style="text-align:center; margin-top:1.4rem;">※ 価格は予定です。決済・ライセンスは外部事業者を利用予定。</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap" style="max-width: 760px;">
+    <div class="sec-head"><span class="kicker">FAQ</span><h2>よくある質問</h2></div>
+    <details><summary>音声はどこかに送信されますか？</summary><p>いいえ。Water Voice は完全オンデバイスで動作し、音声・テキストを外部サーバーに送信しません。</p></details>
+    <details><summary>Windows でも使えますか？</summary><p>いいえ。macOS 専用です（macOS 14 以降）。Apple の音声・AI技術を利用しているためです。</p></details>
+    <details><summary>古いMacでも動きますか？</summary><p>macOS 14 以降なら動作します。最新のAI整形は macOS 26 でフル機能、旧OSではルールベース軽整形（任意でローカルLLM対応）になります。</p></details>
+    <details><summary>返金はできますか？</summary><p>7日間の無料トライアルで十分にお試しいただけます。返金条件は購入ページの「特定商取引法に基づく表記」をご確認ください。</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="assets/icon-1024.png" alt="" style="width:24px;height:24px;border-radius:6px"> Water Voice</a>
+    <div class="spacer"></div>
+    <a href="#">プライバシーポリシー</a>
+    <a href="#">利用規約</a>
+    <a href="#">特定商取引法に基づく表記</a>
+    <span>© 2026 Water Voice</span>
+  </div>
+</footer>
+
+</body>
+</html>

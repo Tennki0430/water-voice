@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="320" viewBox="0 0 960 320" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0f8ff"/>
+      <stop offset="1" stop-color="#e2f1fb"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef7fe"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#3b9ad9"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="320" rx="20" fill="url(#bg)"/>
+  <text x="40" y="52" font-size="26" font-weight="700" fill="#0d4f78">Water Voice の使い方</text>
+  <text x="40" y="80" font-size="15" fill="#4a7491">右 Option キーを押している間だけ話す → 離すと自動で整形して貼り付け</text>
+
+  <!-- step cards -->
+  <g>
+    <!-- 1 -->
+    <rect x="36" y="120" width="160" height="140" rx="16" fill="url(#card)" stroke="#bfe0f5"/>
+    <circle cx="66" cy="150" r="16" fill="#3b9ad9"/>
+    <text x="66" y="156" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+    <text x="116" y="200" font-size="34" text-anchor="middle">⌥🎙</text>
+    <text x="116" y="234" font-size="15" font-weight="700" fill="#0d4f78" text-anchor="middle">押して話す</text>
+
+    <!-- 2 -->
+    <rect x="232" y="120" width="160" height="140" rx="16" fill="url(#card)" stroke="#bfe0f5"/>
+    <circle cx="262" cy="150" r="16" fill="#3b9ad9"/>
+    <text x="262" y="156" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+    <text x="312" y="200" font-size="34" text-anchor="middle">📝</text>
+    <text x="312" y="234" font-size="15" font-weight="700" fill="#0d4f78" text-anchor="middle">文字起こし</text>
+    <text x="312" y="252" font-size="11" fill="#6b8ba3" text-anchor="middle">Apple Speech</text>
+
+    <!-- 3 -->
+    <rect x="428" y="120" width="160" height="140" rx="16" fill="url(#card)" stroke="#bfe0f5"/>
+    <circle cx="458" cy="150" r="16" fill="#3b9ad9"/>
+    <text x="458" y="156" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+    <text x="508" y="200" font-size="34" text-anchor="middle">🧠</text>
+    <text x="508" y="234" font-size="15" font-weight="700" fill="#0d4f78" text-anchor="middle">AI 整形</text>
+    <text x="508" y="252" font-size="11" fill="#6b8ba3" text-anchor="middle">Foundation Models</text>
+
+    <!-- 4 -->
+    <rect x="624" y="120" width="160" height="140" rx="16" fill="url(#card)" stroke="#bfe0f5"/>
+    <circle cx="654" cy="150" r="16" fill="#3b9ad9"/>
+    <text x="654" y="156" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+    <text x="704" y="200" font-size="34" text-anchor="middle">📋</text>
+    <text x="704" y="234" font-size="15" font-weight="700" fill="#0d4f78" text-anchor="middle">クリップボード</text>
+
+    <!-- 5 -->
+    <rect x="800" y="120" width="124" height="140" rx="16" fill="#3b9ad9"/>
+    <circle cx="830" cy="150" r="16" fill="#fff"/>
+    <text x="830" y="156" font-size="16" font-weight="700" fill="#3b9ad9" text-anchor="middle">5</text>
+    <text x="862" y="200" font-size="34" text-anchor="middle">✨</text>
+    <text x="862" y="234" font-size="15" font-weight="700" fill="#fff" text-anchor="middle">どのアプリ</text>
+    <text x="862" y="252" font-size="11" fill="#d6ecfb" text-anchor="middle">にも自動入力</text>
+  </g>
+
+  <!-- arrows -->
+  <g stroke="#3b9ad9" stroke-width="3" marker-end="url(#arrow)">
+    <line x1="200" y1="190" x2="226" y2="190"/>
+    <line x1="396" y1="190" x2="422" y2="190"/>
+    <line x1="592" y1="190" x2="618" y2="190"/>
+    <line x1="788" y1="190" x2="796" y2="190"/>
+  </g>
+
+  <text x="480" y="300" font-size="13" fill="#4a7491" text-anchor="middle">🍃 すべてオンデバイスで完結 — 外部送信なし・API コストゼロ</text>
+</svg>
