@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eef6fc"/>
+      <stop offset="1" stop-color="#dcecf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="360" rx="20" fill="url(#bg3)"/>
+
+  <!-- desktop menu bar -->
+  <rect x="0" y="0" width="960" height="36" rx="20" fill="#ffffff" opacity="0.85"/>
+  <text x="900" y="24" font-size="16" fill="#1c3b50" text-anchor="middle">🍃</text>
+  <text x="826" y="23" font-size="13" fill="#3b9ad9">14:32</text>
+
+  <!-- callout to menu bar icon -->
+  <text x="700" y="64" font-size="13" fill="#4a7491">メニューバーに常駐（Dock アイコンなし）↗</text>
+
+  <!-- dropdown menu -->
+  <g>
+    <rect x="700" y="74" width="220" height="184" rx="14" fill="#ffffff" stroke="#cfe6f6"/>
+    <text x="720" y="104" font-size="14" fill="#1c3b50">🟢 待機中</text>
+    <line x1="716" y1="118" x2="904" y2="118" stroke="#eef2f6"/>
+    <text x="720" y="142" font-size="14" fill="#1c3b50">⚙️ 設定…</text>
+    <text x="720" y="172" font-size="14" fill="#1c3b50">📊 統計情報…</text>
+    <text x="720" y="202" font-size="14" fill="#1c3b50">トーン：フォーマル ▾</text>
+    <line x1="716" y1="216" x2="904" y2="216" stroke="#eef2f6"/>
+    <text x="720" y="240" font-size="14" fill="#c0392b">終了</text>
+  </g>
+
+  <!-- floating pill (recording) -->
+  <text x="40" y="120" font-size="20" font-weight="700" fill="#0d4f78">録音中のフローティング表示</text>
+  <text x="40" y="146" font-size="13" fill="#4a7491">ホットキーを押すと画面下部にピルが出て、波形でレベルを表示します</text>
+
+  <g>
+    <rect x="120" y="186" width="360" height="72" rx="36" fill="#1c3b50"/>
+    <circle cx="160" cy="222" r="14" fill="#ff5a5a"/>
+    <text x="160" y="227" font-size="13" fill="#fff" text-anchor="middle">●</text>
+    <!-- waveform -->
+    <g fill="#5fd0ff">
+      <rect x="196" y="212" width="6" height="20" rx="3"/>
+      <rect x="208" y="202" width="6" height="40" rx="3"/>
+      <rect x="220" y="196" width="6" height="52" rx="3"/>
+      <rect x="232" y="208" width="6" height="28" rx="3"/>
+      <rect x="244" y="200" width="6" height="44" rx="3"/>
+      <rect x="256" y="214" width="6" height="16" rx="3"/>
+      <rect x="268" y="204" width="6" height="36" rx="3"/>
+      <rect x="280" y="210" width="6" height="24" rx="3"/>
+      <rect x="292" y="198" width="6" height="48" rx="3"/>
+    </g>
+    <text x="372" y="227" font-size="15" fill="#d6ecfb">録音中… 話してください</text>
+  </g>
+  <text x="120" y="290" font-size="12" fill="#6b8ba3">キーを離すと自動で整形 → 貼り付け。Esc 相当の操作でキャンセルも可能。</text>
+</svg>

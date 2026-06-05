@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="460" viewBox="0 0 960 460" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0f8ff"/>
+      <stop offset="1" stop-color="#e2f1fb"/>
+    </linearGradient>
+    <marker id="arr2" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#2bb673"/>
+    </marker>
+  </defs>
+  <rect width="960" height="460" rx="20" fill="url(#bg2)"/>
+  <text x="40" y="50" font-size="26" font-weight="700" fill="#0d4f78">AI コマンド — 話し終わりに一言添えるだけ</text>
+  <text x="40" y="78" font-size="15" fill="#4a7491">文末のキーワードを検出して、その指示どおりに整形・翻訳します（完全オンデバイス）</text>
+
+  <!-- example template repeated -->
+  <!-- Example 1: 翻訳 -->
+  <g>
+    <rect x="40" y="104" width="380" height="92" rx="14" fill="#ffffff" stroke="#cfe6f6"/>
+    <text x="58" y="130" font-size="12" fill="#8aa6bb">🎙 あなたの発話</text>
+    <text x="58" y="158" font-size="16" fill="#1c3b50">明日10時に会議です</text>
+    <text x="58" y="182" font-size="14" fill="#3b9ad9" font-weight="700">…英語にして</text>
+
+    <rect x="540" y="104" width="380" height="92" rx="14" fill="#eafaf1" stroke="#bfe9d3"/>
+    <text x="558" y="130" font-size="12" fill="#5aa888">✨ 入力される文章</text>
+    <text x="558" y="162" font-size="16" fill="#15643f">We have a meeting at 10 AM tomorrow.</text>
+  </g>
+
+  <!-- Example 2: 箇条書き -->
+  <g>
+    <rect x="40" y="216" width="380" height="92" rx="14" fill="#ffffff" stroke="#cfe6f6"/>
+    <text x="58" y="242" font-size="12" fill="#8aa6bb">🎙 あなたの発話</text>
+    <text x="58" y="270" font-size="15" fill="#1c3b50">資料作成と予約と請求書送付</text>
+    <text x="58" y="294" font-size="14" fill="#3b9ad9" font-weight="700">…箇条書きにして</text>
+
+    <rect x="540" y="216" width="380" height="92" rx="14" fill="#eafaf1" stroke="#bfe9d3"/>
+    <text x="558" y="242" font-size="12" fill="#5aa888">✨ 入力される文章</text>
+    <text x="558" y="266" font-size="14" fill="#15643f">- 資料作成</text>
+    <text x="558" y="285" font-size="14" fill="#15643f">- 予約</text>
+    <text x="558" y="304" font-size="14" fill="#15643f">- 請求書送付</text>
+  </g>
+
+  <!-- Example 3: 敬語 -->
+  <g>
+    <rect x="40" y="328" width="380" height="92" rx="14" fill="#ffffff" stroke="#cfe6f6"/>
+    <text x="58" y="354" font-size="12" fill="#8aa6bb">🎙 あなたの発話</text>
+    <text x="58" y="382" font-size="15" fill="#1c3b50">あとで連絡する</text>
+    <text x="58" y="406" font-size="14" fill="#3b9ad9" font-weight="700">…敬語にして</text>
+
+    <rect x="540" y="328" width="380" height="92" rx="14" fill="#eafaf1" stroke="#bfe9d3"/>
+    <text x="558" y="354" font-size="12" fill="#5aa888">✨ 入力される文章</text>
+    <text x="558" y="386" font-size="16" fill="#15643f">のちほどご連絡いたします。</text>
+  </g>
+
+  <!-- arrows between -->
+  <g stroke="#2bb673" stroke-width="3" marker-end="url(#arr2)">
+    <line x1="424" y1="150" x2="536" y2="150"/>
+    <line x1="424" y1="262" x2="536" y2="262"/>
+    <line x1="424" y1="374" x2="536" y2="374"/>
+  </g>
+</svg>

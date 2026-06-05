@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="440" viewBox="0 0 960 440" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eef6fc"/>
+      <stop offset="1" stop-color="#dcecf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="440" rx="20" fill="url(#bg4)"/>
+  <text x="40" y="48" font-size="24" font-weight="700" fill="#0d4f78">設定画面</text>
+
+  <!-- window -->
+  <g>
+    <rect x="40" y="68" width="880" height="344" rx="14" fill="#ffffff" stroke="#cfe6f6"/>
+    <!-- title bar -->
+    <rect x="40" y="68" width="880" height="40" rx="14" fill="#f4f9fd"/>
+    <circle cx="64" cy="88" r="6" fill="#ff5f56"/>
+    <circle cx="84" cy="88" r="6" fill="#ffbd2e"/>
+    <circle cx="104" cy="88" r="6" fill="#27c93f"/>
+    <text x="480" y="93" font-size="14" font-weight="700" fill="#1c3b50" text-anchor="middle">Water Voice 設定</text>
+
+    <!-- tabs -->
+    <g font-size="13">
+      <rect x="64" y="122" width="120" height="32" rx="8" fill="#3b9ad9"/>
+      <text x="124" y="143" fill="#fff" text-anchor="middle">⚙️ 一般</text>
+      <text x="240" y="143" fill="#4a7491" text-anchor="middle">📖 辞書</text>
+      <text x="360" y="143" fill="#4a7491" text-anchor="middle">📱 アプリ別</text>
+      <text x="490" y="143" fill="#4a7491" text-anchor="middle">✨ AIコマンド</text>
+    </g>
+    <line x1="64" y1="166" x2="896" y2="166" stroke="#eef2f6"/>
+
+    <!-- 一般 tab content -->
+    <text x="80" y="200" font-size="14" fill="#1c3b50">ショートカット</text>
+    <text x="876" y="200" font-size="14" fill="#6b8ba3" text-anchor="end">右 Option を押しながら話す</text>
+
+    <text x="80" y="240" font-size="14" fill="#1c3b50">言語</text>
+    <rect x="740" y="224" width="136" height="26" rx="6" fill="#f0f6fb" stroke="#cfe6f6"/>
+    <text x="808" y="242" font-size="13" fill="#1c3b50" text-anchor="middle">日本語 ▾</text>
+
+    <text x="80" y="280" font-size="14" fill="#1c3b50">既定のトーン</text>
+    <rect x="740" y="264" width="136" height="26" rx="6" fill="#f0f6fb" stroke="#cfe6f6"/>
+    <text x="808" y="282" font-size="13" fill="#1c3b50" text-anchor="middle">フォーマル ▾</text>
+
+    <!-- tone chips -->
+    <g font-size="12">
+      <rect x="80" y="312" width="86" height="26" rx="13" fill="#e7f3fb" stroke="#bfe0f5"/>
+      <text x="123" y="329" fill="#0d4f78" text-anchor="middle">そのまま</text>
+      <rect x="176" y="312" width="92" height="26" rx="13" fill="#3b9ad9"/>
+      <text x="222" y="329" fill="#fff" text-anchor="middle">フォーマル</text>
+      <rect x="278" y="312" width="92" height="26" rx="13" fill="#e7f3fb" stroke="#bfe0f5"/>
+      <text x="324" y="329" fill="#0d4f78" text-anchor="middle">カジュアル</text>
+      <rect x="380" y="312" width="74" height="26" rx="13" fill="#e7f3fb" stroke="#bfe0f5"/>
+      <text x="417" y="329" fill="#0d4f78" text-anchor="middle">メール</text>
+      <rect x="464" y="312" width="84" height="26" rx="13" fill="#e7f3fb" stroke="#bfe0f5"/>
+      <text x="506" y="329" fill="#0d4f78" text-anchor="middle">チャット</text>
+    </g>
+
+    <text x="80" y="372" font-size="12" fill="#6b8ba3">トーンは整形時の文体です。「アプリ別」タブでアプリごとに上書きできます。</text>
+  </g>
+</svg>

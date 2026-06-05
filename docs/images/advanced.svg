@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <defs>
+    <linearGradient id="bg5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eef6fc"/>
+      <stop offset="1" stop-color="#dcecf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="360" rx="20" fill="url(#bg5)"/>
+
+  <!-- Dictionary panel -->
+  <g>
+    <text x="40" y="44" font-size="18" font-weight="700" fill="#0d4f78">📖 カスタム辞書（読み → 表記）</text>
+    <rect x="40" y="60" width="420" height="260" rx="14" fill="#ffffff" stroke="#cfe6f6"/>
+    <text x="64" y="92" font-size="12" fill="#8aa6bb">読み（聞こえ方）</text>
+    <text x="300" y="92" font-size="12" fill="#8aa6bb">正しい表記</text>
+
+    <g font-size="14" fill="#1c3b50">
+      <rect x="64" y="104" width="150" height="30" rx="6" fill="#f0f6fb" stroke="#cfe6f6"/>
+      <text x="74" y="124">さいとう</text>
+      <text x="232" y="124" fill="#3b9ad9">→</text>
+      <rect x="260" y="104" width="176" height="30" rx="6" fill="#f0f6fb" stroke="#cfe6f6"/>
+      <text x="270" y="124">齋藤</text>
+
+      <rect x="64" y="146" width="150" height="30" rx="6" fill="#f0f6fb" stroke="#cfe6f6"/>
+      <text x="74" y="166">あくあ</text>
+      <text x="232" y="166" fill="#3b9ad9">→</text>
+      <rect x="260" y="146" width="176" height="30" rx="6" fill="#f0f6fb" stroke="#cfe6f6"/>
+      <text x="270" y="166">Aqua</text>
+
+      <rect x="64" y="188" width="150" height="30" rx="6" fill="#f0f6fb" stroke="#cfe6f6"/>
+      <text x="74" y="208">じーぴーゆー</text>
+      <text x="232" y="208" fill="#3b9ad9">→</text>
+      <rect x="260" y="188" width="176" height="30" rx="6" fill="#f0f6fb" stroke="#cfe6f6"/>
+      <text x="270" y="208">GPU</text>
+    </g>
+    <rect x="64" y="232" width="80" height="28" rx="8" fill="#e7f3fb" stroke="#bfe0f5"/>
+    <text x="104" y="251" font-size="13" fill="#0d4f78" text-anchor="middle">＋ 追加</text>
+    <text x="64" y="294" font-size="11" fill="#6b8ba3">固有名詞や専門用語の</text>
+    <text x="64" y="310" font-size="11" fill="#6b8ba3">誤変換を防ぎます。</text>
+  </g>
+
+  <!-- App profiles panel -->
+  <g>
+    <text x="500" y="44" font-size="18" font-weight="700" fill="#0d4f78">📱 アプリ別プロファイル</text>
+    <rect x="500" y="60" width="420" height="260" rx="14" fill="#ffffff" stroke="#cfe6f6"/>
+    <text x="524" y="92" font-size="12" fill="#8aa6bb">バンドルID</text>
+    <text x="780" y="92" font-size="12" fill="#8aa6bb">トーン</text>
+
+    <g font-size="13" fill="#1c3b50">
+      <rect x="524" y="104" width="220" height="30" rx="6" fill="#f0f6fb" stroke="#cfe6f6"/>
+      <text x="534" y="124">com.apple.mail</text>
+      <rect x="760" y="104" width="136" height="30" rx="6" fill="#e7f3fb" stroke="#bfe0f5"/>
+      <text x="828" y="124" text-anchor="middle">メール ▾</text>
+
+      <rect x="524" y="146" width="220" height="30" rx="6" fill="#f0f6fb" stroke="#cfe6f6"/>
+      <text x="534" y="166">com.tinyspeck.slackmacgap</text>
+      <rect x="760" y="146" width="136" height="30" rx="6" fill="#e7f3fb" stroke="#bfe0f5"/>
+      <text x="828" y="166" text-anchor="middle">チャット ▾</text>
+
+      <rect x="524" y="188" width="220" height="30" rx="6" fill="#f0f6fb" stroke="#cfe6f6"/>
+      <text x="534" y="208">com.microsoft.VSCode</text>
+      <rect x="760" y="188" width="136" height="30" rx="6" fill="#e7f3fb" stroke="#bfe0f5"/>
+      <text x="828" y="208" text-anchor="middle">そのまま ▾</text>
+    </g>
+    <rect x="524" y="232" width="80" height="28" rx="8" fill="#e7f3fb" stroke="#bfe0f5"/>
+    <text x="564" y="251" font-size="13" fill="#0d4f78" text-anchor="middle">＋ 追加</text>
+    <text x="524" y="294" font-size="11" fill="#6b8ba3">最前面のアプリに合わせて</text>
+    <text x="524" y="310" font-size="11" fill="#6b8ba3">文体を自動で切り替えます。</text>
+  </g>
+</svg>
