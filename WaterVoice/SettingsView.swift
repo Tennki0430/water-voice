@@ -1,7 +1,7 @@
 import SwiftUI
 import WaterVoiceCore
 
-/// Settings window modeled on Aqua Voice: shortcut, language, custom instructions, dictionary.
+/// Settings window: shortcut, language, tone, dictionary, per-app profiles.
 /// Persists via SettingsStore (UserDefaults-backed).
 struct SettingsView: View {
     @State private var languageCode: String
@@ -159,7 +159,7 @@ private struct AppProfileRow: Identifiable, Equatable {
     var tone: DictationTone
 }
 
-/// 統計情報ウィンドウ（Aqua Voice 相当）
+/// 統計情報ウィンドウ
 struct StatsView: View {
     @StateObject private var stats = StatsTracker()
 

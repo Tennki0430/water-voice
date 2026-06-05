@@ -1,7 +1,7 @@
 import SwiftUI
 import WaterVoiceCore
 
-/// The menu shown when clicking the menu-bar icon. Modeled on Aqua Voice's menu.
+/// The menu shown when clicking the menu-bar icon.
 struct MenuBarView: View {
     @ObservedObject var coordinator: AppCoordinator
     @Environment(\.openWindow) private var openWindow
@@ -29,7 +29,7 @@ struct MenuBarView: View {
 
         Divider()
 
-        // Aqua-Voice-style configuration entries
+        // 設定項目
         Button("設定…") { openWindow(id: "settings") }
             .keyboardShortcut(",", modifiers: .command)
         Button("辞書を編集…") { openWindow(id: "settings") }

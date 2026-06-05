@@ -125,10 +125,10 @@ func settingsRoundTrip() {
     #expect(settings.defaultTone == .asIs)
 
     settings.defaultTone = .email
-    settings.dictionaryEntries = [DictionaryEntry(spoken: "あくあ", written: "Aqua")]
+    settings.dictionaryEntries = [DictionaryEntry(spoken: "すいふと", written: "Swift")]
     settings.appProfiles = ["com.apple.mail": .email]
 
     #expect(settings.defaultTone == .email)
-    #expect(settings.dictionaryEntries.first?.written == "Aqua")
+    #expect(settings.dictionaryEntries.first?.written == "Swift")
     #expect(settings.profileResolver.tone(forBundleID: "com.apple.mail") == .email)
 }

@@ -15,10 +15,10 @@ func ruleBasedCleansFillers() async throws {
 @Test("rule-based formatter applies custom dictionary replacements")
 func ruleBasedDictionary() {
     let f = RuleBasedFormatter()
-    let dict = CustomDictionary(entries: [DictionaryEntry(spoken: "あくあ", written: "Aqua")])
-    let out = f.clean("あくあボイスです", dictionary: dict)
-    #expect(out.contains("Aqua"))
-    #expect(!out.contains("あくあ"))
+    let dict = CustomDictionary(entries: [DictionaryEntry(spoken: "すいふと", written: "Swift")])
+    let out = f.clean("すいふとは速い", dictionary: dict)
+    #expect(out.contains("Swift"))
+    #expect(!out.contains("すいふと"))
 }
 
 @Test("rule-based formatter does not double-add punctuation")

@@ -6,7 +6,7 @@
 
 ## 概要
 
-Aqua Voice 相当の **macOS ネイティブ常駐ディクテーションアプリ**「**Water Voice**」を開発する。
+市販の音声入力アプリに匹敵する **macOS ネイティブ常駐ディクテーションアプリ**「**Water Voice**」を開発する。
 グローバルホットキーを押している間にマイク音声を録音し、Apple の新 Speech API
 （`SpeechAnalyzer` / `SpeechTranscriber`）で文字起こし、Apple Foundation Models
 （オンデバイス LLM）で整形（句読点付け・フィラー除去・改行・誤認識修正）したうえで、
