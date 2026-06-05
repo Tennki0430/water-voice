@@ -54,6 +54,33 @@ Aqua Voice / Wispr Flow / Superwhisper といった有料アプリ相当の体�
   <img src="docs/images/advanced.svg" alt="カスタム辞書とアプリ別プロファイルの設定例" width="100%">
 </p>
 
+#### アプリ別プロファイルのバンドルID早見表
+
+「アプリ別」タブの **バンドルID** には、以下のような識別子を入力します。
+
+| アプリ | バンドルID | おすすめトーン例 |
+|---|---|---|
+| メール（Mail） | `com.apple.mail` | メール |
+| メモ（Notes） | `com.apple.Notes` | そのまま |
+| メッセージ（Messages） | `com.apple.MobileSMS` | チャット |
+| Safari | `com.apple.Safari` | そのまま |
+| TextEdit | `com.apple.TextEdit` | そのまま |
+| Slack | `com.tinyspeck.slackmacgap` | チャット |
+| Google Chrome | `com.google.Chrome` | そのまま |
+| VS Code | `com.microsoft.VSCode` | そのまま |
+| Notion | `notion.id` | フォーマル |
+| LINE | `jp.naver.line.mac` | カジュアル |
+| Discord | `com.hnc.Discord` | チャット |
+| Obsidian | `md.obsidian` | そのまま |
+
+> 一覧に無いアプリのバンドルIDは、ターミナルで次のコマンドで調べられます（アプリ名を置き換える）:
+>
+> ```bash
+> osascript -e 'id of app "アプリ名"'
+> ```
+>
+> 例: `osascript -e 'id of app "Cursor"'`
+
 > 💡 **図はイメージ（モックアップ）です。** 実機のスクリーンショットは、アプリ起動後に差し替え可能です。
 
 ---
