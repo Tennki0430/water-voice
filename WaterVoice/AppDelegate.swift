@@ -1,5 +1,6 @@
 import AppKit
 import Combine
+import SwiftUI
 import WaterVoiceCore
 
 /// アプリのコーディネーター。録音・ホットキー・フローティングピル・統計・トーストを管理します。
@@ -16,6 +17,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let pill  = FloatingPillController()
     private let toast = ToastController()
     private var cancellables: Set<AnyCancellable> = []
+
+    // NSStatusItem — AppKit でメニューバーアイコンを表示
+    private var statusItem: NSStatusItem?
+    private var statusMenu: NSMenu?
+    private var settingsWindowController: NSWindowController?
 
     override init() {
         let recorder   = AVAudioRecorderAdapter()
@@ -47,6 +53,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        setupStatusItem()
         hotKey.debugInfo = hotKeyDebug
         hotKey.requestAccessibilityIfNeeded()
 
@@ -104,6 +111,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .store(in: &cancellables)
     }
 
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        openSettings()
+        return true
+    }
+
     func applicationWillTerminate(_ notification: Notification) {
         hotKey.stop()
     }
@@ -111,5 +123,92 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// 言語設定が変わったときに呼ぶ（設定ウィンドウから）。
     func updateLanguage(_ code: String) {
         transcriber.localeIdentifier = code
+    }
+
+    // MARK: - NSStatusItem (AppKit fallback)
+
+    private func setupStatusItem() {
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        item.autosaveName = "WaterVoice"
+        item.button?.image = NSImage(systemSymbolName: "mic", accessibilityDescription: "Water Voice")
+        item.button?.image?.isTemplate = true
+        item.isVisible = true
+
+        let menu = NSMenu()
+        menu.addItem(withTitle: "録音を開始", action: #selector(startRecording), keyEquivalent: "")
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(withTitle: "設定…", action: #selector(openSettings), keyEquivalent: ",")
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(withTitle: "Water Voice を終了", action: #selector(quitApp), keyEquivalent: "q")
+
+        item.menu = menu
+        statusItem = item
+        statusMenu = menu
+
+        // 状態変化でアイコンを更新
+        coordinator.$state
+            .removeDuplicates()
+            .sink { [weak self] state in
+                guard let self, let button = self.statusItem?.button else { return }
+                let name: String
+                switch state {
+                case .idle:        name = "mic"
+                case .recording:   name = "mic.fill"
+                default:           name = "waveform.circle"
+                }
+                button.image = NSImage(systemSymbolName: name, accessibilityDescription: "Water Voice")
+                button.image?.isTemplate = true
+                self.updateMenu(state: state)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func updateMenu(state: DictationState) {
+        guard let menu = statusMenu else { return }
+        menu.removeAllItems()
+        if state == .recording {
+            menu.addItem(withTitle: "録音を停止", action: #selector(stopRecording), keyEquivalent: "")
+            menu.addItem(withTitle: "録音をキャンセル", action: #selector(cancelRecording), keyEquivalent: "")
+        } else {
+            let startItem = menu.addItem(withTitle: "録音を開始", action: #selector(startRecording), keyEquivalent: "")
+            startItem.isEnabled = state == .idle
+        }
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(withTitle: "設定…", action: #selector(openSettings), keyEquivalent: ",")
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(withTitle: "Water Voice を終了", action: #selector(quitApp), keyEquivalent: "q")
+    }
+
+    @objc private func startRecording() {
+        Task { try? await coordinator.beginRecording() }
+    }
+
+    @objc private func stopRecording() {
+        Task { await coordinator.endRecordingAndProcess(); levelMonitor.reset() }
+    }
+
+    @objc private func cancelRecording() {
+        Task { await coordinator.cancelRecording(); levelMonitor.reset() }
+    }
+
+    @objc private func openSettings() {
+        if settingsWindowController == nil {
+            let win = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 560, height: 500),
+                styleMask: [.titled, .closable, .resizable],
+                backing: .buffered,
+                defer: false
+            )
+            win.title = "設定"
+            win.contentView = NSHostingView(rootView: SettingsView())
+            win.center()
+            settingsWindowController = NSWindowController(window: win)
+        }
+        settingsWindowController?.showWindow(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    @objc private func quitApp() {
+        NSApp.terminate(nil)
     }
 }

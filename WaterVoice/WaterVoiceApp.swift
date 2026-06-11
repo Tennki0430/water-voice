@@ -6,13 +6,10 @@ struct WaterVoiceApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
-        MenuBarExtra {
+        MenuBarExtra("Water Voice", systemImage: "mic") {
             MenuBarView(coordinator: appDelegate.coordinator)
-        } label: {
-            MenuBarLabel(coordinator: appDelegate.coordinator)
         }
 
-        // Opened on demand from the menu.
         Window("設定", id: "settings") {
             SettingsView()
         }
@@ -31,21 +28,5 @@ struct WaterVoiceApp: App {
             )
         }
         .windowResizability(.contentSize)
-    }
-}
-
-/// Menu-bar label: mic when idle, filled mic while recording, spinner-ish while processing.
-private struct MenuBarLabel: View {
-    @ObservedObject var coordinator: AppCoordinator
-
-    var body: some View {
-        switch coordinator.state {
-        case .idle:
-            Image(systemName: "mic")
-        case .recording:
-            Image(systemName: "mic.fill")
-        case .transcribing, .formatting, .injecting:
-            Image(systemName: "waveform.circle")
-        }
     }
 }
