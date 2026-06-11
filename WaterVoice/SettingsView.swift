@@ -8,6 +8,11 @@ struct SettingsView: View {
     @State private var defaultTone: DictationTone
     @State private var dictionary: [DictionaryEntry]
     @State private var profiles: [AppProfileRow]
+    @State private var formatterEngine: FormatterEngine
+    @State private var geminiApiKey: String
+    @State private var claudeApiKey: String
+    @State private var geminiModel: String
+    @State private var claudeModel: String
 
     private let store: SettingsStore
 
@@ -18,12 +23,19 @@ struct SettingsView: View {
         _defaultTone = State(initialValue: store.defaultTone)
         _dictionary = State(initialValue: store.dictionaryEntries)
         _profiles = State(initialValue: store.appProfiles.map { AppProfileRow(bundleID: $0.key, tone: $0.value) })
+        _formatterEngine = State(initialValue: store.formatterEngine)
+        _geminiApiKey = State(initialValue: store.geminiApiKey ?? "")
+        _claudeApiKey = State(initialValue: store.claudeApiKey ?? "")
+        _geminiModel = State(initialValue: store.geminiModel)
+        _claudeModel = State(initialValue: store.claudeModel)
     }
 
     var body: some View {
         TabView {
             generalTab
                 .tabItem { Label("一般", systemImage: "gearshape") }
+            aiEngineTab
+                .tabItem { Label("AI整形", systemImage: "sparkles") }
             dictionaryTab
                 .tabItem { Label("辞書", systemImage: "character.book.closed") }
             profilesTab
@@ -31,7 +43,7 @@ struct SettingsView: View {
             commandsTab
                 .tabItem { Label("AIコマンド", systemImage: "wand.and.stars") }
         }
-        .frame(width: 520, height: 440)
+        .frame(width: 520, height: 460)
         .padding()
     }
 
@@ -57,6 +69,58 @@ struct SettingsView: View {
 
             Text("トーンは整形時の文体です。アプリ別タブで個別に上書きできます。")
                 .font(.caption).foregroundStyle(.secondary)
+        }
+        .formStyle(.grouped)
+    }
+
+    // MARK: - AI整形エンジン
+
+    private var aiEngineTab: some View {
+        Form {
+            Picker("整形エンジン", selection: $formatterEngine) {
+                ForEach(FormatterEngine.allCases, id: \.self) { engine in
+                    Text(engine.displayName).tag(engine)
+                }
+            }
+            .onChange(of: formatterEngine) { _, newValue in store.formatterEngine = newValue }
+
+            Text("オンデバイス: Apple Intelligence（macOS 26）または Ollama（ローカル）を使用。\nAPI: 指定したサービスのクラウド API を使用します（API キーが必要）。")
+                .font(.caption).foregroundStyle(.secondary)
+
+            if formatterEngine == .gemini {
+                Section("Gemini API") {
+                    SecureField("Gemini API キー", text: $geminiApiKey)
+                        .onChange(of: geminiApiKey) { _, v in store.geminiApiKey = v.isEmpty ? nil : v }
+                    Picker("モデル", selection: $geminiModel) {
+                        ForEach(GeminiModel.all) { m in
+                            Text(m.displayName).tag(m.id)
+                        }
+                    }
+                    .onChange(of: geminiModel) { _, v in store.geminiModel = v }
+                    Text("APIキーは aistudio.google.com で取得できます。")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+
+            if formatterEngine == .claude {
+                Section("Claude API") {
+                    SecureField("Claude API キー", text: $claudeApiKey)
+                        .onChange(of: claudeApiKey) { _, v in store.claudeApiKey = v.isEmpty ? nil : v }
+                    Picker("モデル", selection: $claudeModel) {
+                        ForEach(ClaudeModel.all) { m in
+                            Text(m.displayName).tag(m.id)
+                        }
+                    }
+                    .onChange(of: claudeModel) { _, v in store.claudeModel = v }
+                    Text("APIキーは console.anthropic.com で取得できます。")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+
+            if formatterEngine != .auto {
+                Text("⚠️ APIキー未入力の場合はオンデバイスにフォールバックします。")
+                    .font(.caption).foregroundStyle(.orange)
+            }
         }
         .formStyle(.grouped)
     }

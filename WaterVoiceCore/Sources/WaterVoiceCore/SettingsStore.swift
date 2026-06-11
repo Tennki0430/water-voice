@@ -11,6 +11,11 @@ public final class SettingsStore {
         static let tone = "watervoice.defaultTone"
         static let dictionary = "watervoice.dictionaryEntries"
         static let appProfiles = "watervoice.appProfiles"
+        static let formatterEngine = "watervoice.formatterEngine"
+        static let geminiApiKey = "watervoice.geminiApiKey"
+        static let claudeApiKey = "watervoice.claudeApiKey"
+        static let geminiModel = "watervoice.geminiModel"
+        static let claudeModel = "watervoice.claudeModel"
     }
 
     public init(store: KeyValueStore) {
@@ -49,6 +54,36 @@ public final class SettingsStore {
     public var appProfiles: [String: DictationTone] {
         get { decode([String: DictationTone].self, forKey: Key.appProfiles) ?? [:] }
         set { encode(newValue, forKey: Key.appProfiles) }
+    }
+
+    /// Which AI formatter to use for post-processing.
+    public var formatterEngine: FormatterEngine {
+        get { store.string(forKey: Key.formatterEngine).flatMap(FormatterEngine.init(rawValue:)) ?? .auto }
+        set { store.set(newValue.rawValue, forKey: Key.formatterEngine) }
+    }
+
+    /// Gemini API key (stored in UserDefaults; personal local app).
+    public var geminiApiKey: String? {
+        get { store.string(forKey: Key.geminiApiKey) }
+        set { store.set(newValue, forKey: Key.geminiApiKey) }
+    }
+
+    /// Claude (Anthropic) API key.
+    public var claudeApiKey: String? {
+        get { store.string(forKey: Key.claudeApiKey) }
+        set { store.set(newValue, forKey: Key.claudeApiKey) }
+    }
+
+    /// Gemini model identifier (e.g. "gemini-2.0-flash").
+    public var geminiModel: String {
+        get { store.string(forKey: Key.geminiModel) ?? GeminiModel.defaultModel.id }
+        set { store.set(newValue, forKey: Key.geminiModel) }
+    }
+
+    /// Claude model identifier (e.g. "claude-haiku-4-5-20251001").
+    public var claudeModel: String {
+        get { store.string(forKey: Key.claudeModel) ?? ClaudeModel.defaultModel.id }
+        set { store.set(newValue, forKey: Key.claudeModel) }
     }
 
     /// Resolver combining the default tone with per-app overrides.

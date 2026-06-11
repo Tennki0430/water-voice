@@ -1,4 +1,5 @@
 import AppKit
+import AVFoundation
 import Combine
 import SwiftUI
 import WaterVoiceCore
@@ -22,6 +23,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     private var statusMenu: NSMenu?
     private var settingsWindowController: NSWindowController?
+    private var debugWindowController: NSWindowController?
 
     override init() {
         let recorder   = AVAudioRecorderAdapter()
@@ -39,7 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         coordinator = AppCoordinator(
             recorder: recorder,
             transcriber: transcriber,
-            formatter: EngineFactory.makeFormatter(),
+            formatter: EngineFactory.makeFormatter(settings: settings),
             injector: ClipboardLogic(clipboard: PasteboardClipboard()),
             contextProvider: contextProvider
         )
@@ -56,6 +58,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupStatusItem()
         hotKey.debugInfo = hotKeyDebug
         hotKey.requestAccessibilityIfNeeded()
+        // Request microphone permission early so the user sees the prompt at launch
+        Task {
+            await AVCaptureDevice.requestAccess(for: .audio)
+        }
 
         hotKey.onPress = { [weak self] in
             guard let self else { return }
@@ -112,7 +118,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        openSettings()
+        openDebug()
         return true
     }
 
@@ -138,6 +144,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(withTitle: "録音を開始", action: #selector(startRecording), keyEquivalent: "")
         menu.addItem(NSMenuItem.separator())
         menu.addItem(withTitle: "設定…", action: #selector(openSettings), keyEquivalent: ",")
+        menu.addItem(withTitle: "デバッグ…", action: #selector(openDebug), keyEquivalent: "")
         menu.addItem(NSMenuItem.separator())
         menu.addItem(withTitle: "Water Voice を終了", action: #selector(quitApp), keyEquivalent: "q")
 
@@ -175,6 +182,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         menu.addItem(NSMenuItem.separator())
         menu.addItem(withTitle: "設定…", action: #selector(openSettings), keyEquivalent: ",")
+        menu.addItem(withTitle: "デバッグ…", action: #selector(openDebug), keyEquivalent: "")
         menu.addItem(NSMenuItem.separator())
         menu.addItem(withTitle: "Water Voice を終了", action: #selector(quitApp), keyEquivalent: "q")
     }
@@ -205,6 +213,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             settingsWindowController = NSWindowController(window: win)
         }
         settingsWindowController?.showWindow(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    @objc private func openDebug() {
+        if debugWindowController == nil {
+            let win = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 460, height: 420),
+                styleMask: [.titled, .closable, .resizable],
+                backing: .buffered,
+                defer: false
+            )
+            win.title = "Water Voice — デバッグ"
+            win.contentView = NSHostingView(rootView: DebugView(
+                coordinator: coordinator,
+                levelMonitor: levelMonitor,
+                hotKeyDebug: hotKeyDebug
+            ))
+            win.center()
+            debugWindowController = NSWindowController(window: win)
+        }
+        debugWindowController?.showWindow(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
 

@@ -5,7 +5,8 @@ import Foundation
 @MainActor
 public final class AppCoordinator: ObservableObject {
     @Published public private(set) var state: DictationState = .idle
-    public private(set) var lastError: Error?
+    @Published public private(set) var lastResult: String?
+    @Published public private(set) var lastError: Error?
 
     private let recorder: AudioRecording
     private let transcriber: Transcribing
@@ -34,8 +35,13 @@ public final class AppCoordinator: ObservableObject {
     public func beginRecording() async throws {
         guard state == .idle else { return }
         lastError = nil
-        try await recorder.startRecording()
-        state = .recording
+        do {
+            try await recorder.startRecording()
+            state = .recording
+        } catch {
+            lastError = error
+            throw error
+        }
     }
 
     /// Cancel an in-progress recording without transcribing or injecting.
@@ -68,6 +74,8 @@ public final class AppCoordinator: ObservableObject {
             var context = await contextProvider?.currentContext() ?? .plain
             context.command = parsed.command
             let finalText = await formatOrFallback(rawText: parsed.body, context: context)
+
+            lastResult = finalText
 
             state = .injecting
             try await injector.inject(text: finalText)

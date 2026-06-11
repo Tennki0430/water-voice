@@ -6,10 +6,6 @@ protocol ConfigurableTranscriber: AnyObject, Transcribing {
 }
 
 /// OS バージョンに応じて最適なエンジンを組み立てるファクトリ。
-///
-/// - 文字起こし: macOS 26+ は SpeechAnalyzer、旧 OS は SFSpeechRecognizer。
-/// - AI 整形: macOS 26+ は Foundation Models → Ollama → ルールベース、
-///   旧 OS は Ollama（任意）→ ルールベース の順にフォールバック。
 enum EngineFactory {
     static func makeTranscriber(locale: String) -> any ConfigurableTranscriber {
         if #available(macOS 26, *) {
@@ -18,7 +14,32 @@ enum EngineFactory {
         return SFSpeechTranscriber(localeIdentifier: locale)
     }
 
-    static func makeFormatter() -> any Formatting {
+    /// 設定を読んで適切なフォーマッターを返す。
+    /// API エンジンが選ばれていてもキー未入力ならオンデバイスにフォールバック。
+    static func makeFormatter(settings: SettingsStore) -> any Formatting {
+        let onDevice = makeOnDeviceFormatter()
+
+        switch settings.formatterEngine {
+        case .auto:
+            return onDevice
+
+        case .gemini:
+            guard let key = settings.geminiApiKey, !key.isEmpty else { return onDevice }
+            return FallbackFormatter(
+                primaries: [GeminiFormatter(apiKey: key, model: settings.geminiModel)],
+                fallback: onDevice
+            )
+
+        case .claude:
+            guard let key = settings.claudeApiKey, !key.isEmpty else { return onDevice }
+            return FallbackFormatter(
+                primaries: [ClaudeFormatter(apiKey: key, model: settings.claudeModel)],
+                fallback: onDevice
+            )
+        }
+    }
+
+    private static func makeOnDeviceFormatter() -> any Formatting {
         if #available(macOS 26, *) {
             return FallbackFormatter(primaries: [FoundationModelsFormatter(), OllamaFormatter()])
         }

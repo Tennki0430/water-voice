@@ -20,7 +20,7 @@ struct PasteboardClipboard: ClipboardAccessing {
         down?.flags = .maskCommand
         let up = CGEvent(keyboardEventSource: source, virtualKey: vKey, keyDown: false)
         up?.flags = .maskCommand
-        down?.post(tap: .cghidEventTap)
-        up?.post(tap: .cghidEventTap)
+        down?.post(tap: .cgAnnotatedSessionEventTap)
+        up?.post(tap: .cgAnnotatedSessionEventTap)
     }
 }
