@@ -6,10 +6,6 @@ struct WaterVoiceApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
-        MenuBarExtra("Water Voice", systemImage: "mic") {
-            MenuBarView(coordinator: appDelegate.coordinator)
-        }
-
         Window("設定", id: "settings") {
             SettingsView()
         }
